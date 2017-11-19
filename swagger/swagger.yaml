@@ -169,6 +169,8 @@ definitions:
       description:
         type: "string"
         example: "Something bad happend"
+    xml:
+      name: "Claim"
   Policy:
     type: "object"
     properties:
@@ -193,6 +195,8 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/Claim"
+    xml:
+      name: "Policy"
   Car:
     type: "object"
     required:
@@ -217,6 +221,8 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/Policy"
+    xml:
+      name: "Car"
   ApiResponse:
     type: "object"
     properties:
