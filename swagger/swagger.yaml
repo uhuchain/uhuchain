@@ -10,7 +10,7 @@ info:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
 host: "api.uhuchain.com"
-basePath: "/v2"
+basePath: "/v1"
 tags:
 - name: "car"
   description: "Everything about cars"
@@ -47,6 +47,8 @@ paths:
         schema:
           $ref: "#/definitions/Car"
       responses:
+        201:
+            description: "New car created"
         405:
           description: "Invalid input"
           schema:
@@ -63,7 +65,7 @@ paths:
       - "car"
       summary: "Get a car from uhuchain"
       description: ""
-      operationId: "getCarr"
+      operationId: "getCar"
       produces:
       - "application/json"
       
@@ -160,8 +162,10 @@ definitions:
       id:
         type: "integer"
         format: "int64"
+        example: "12345"
       date:
         type: "string"
+        example: "2016-11-01"
       description:
         type: "string"
   Policy:
@@ -170,15 +174,20 @@ definitions:
       id:
         type: "integer"
         format: "int64"
+        example: "12345"
       insuranceId:
         type: "integer"
         format: "int64"
+        example: "12345"
       insuranceName:
         type: "string"
+        example: "Zurich Insurance Group"
       startDate:
         type: "string"
+        example: "2016-09-01"
       endDate:
         type: "string"
+        example: "2017-09-01"
       claims:
         type: "array"
         items:
@@ -193,6 +202,7 @@ definitions:
       id:
         type: "integer"
         format: "int64"
+        example: "12345"
       vehicleId:
         type: "string"
         example: "THK34SDM6A2D34"
