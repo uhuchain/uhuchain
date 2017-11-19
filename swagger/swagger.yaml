@@ -5,7 +5,7 @@ info:
   title: "Uhuchain Car API"
   termsOfService: "http://uhuchain.com/terms/"
   contact:
-    email: "api@uhuchain.com"
+    email: "developers@uhuchain.com"
   license:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
@@ -168,6 +168,7 @@ definitions:
         example: "2016-11-01"
       description:
         type: "string"
+        example: "Something bad happend"
   Policy:
     type: "object"
     properties:
@@ -208,7 +209,7 @@ definitions:
         example: "THK34SDM6A2D34"
       model:
         type: "string"
-        example: "Volkswagen"
+        example: "Golf GTI"
       brand:
         type: "string"
         example: "Volkswagen"
@@ -222,10 +223,13 @@ definitions:
       code:
         type: "integer"
         format: "int32"
+        example: "6433"
       type:
         type: "string"
+        example: "Error"
       message:
         type: "string"
+        example: "Something bad happend"
 externalDocs:
   description: "Find out more about uhuchain"
   url: "http://uhuchain.com"
