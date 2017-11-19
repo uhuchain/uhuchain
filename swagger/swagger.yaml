@@ -1,0 +1,221 @@
+swagger: "2.0"
+info:
+  description: "Uhuchain simple REST API for cars"
+  version: "0.0.1"
+  title: "Uhuchain Car API"
+  termsOfService: "http://uhuchain.com/terms/"
+  contact:
+    email: "api@uhuchain.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "api.uhuchain.com"
+basePath: "/v2"
+tags:
+- name: "car"
+  description: "Everything about cars"
+  externalDocs:
+    description: "Find out more"
+    url: "http://uhuchain.com"
+- name: "policy"
+  description: "Access to policies"
+- name: "claim"
+  description: "Access to claims"
+  externalDocs:
+    description: "Find out more about our store"
+    url: "http://uhuchain.com"
+schemes:
+- "http"
+- "https"
+paths:
+  /cars:
+    post:
+      tags:
+      - "car"
+      summary: "Add a new car to the blockchain"
+      description: ""
+      operationId: "addCar"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Car that should be added to the uhuchain"
+        required: true
+        schema:
+          $ref: "#/definitions/Car"
+      responses:
+        405:
+          description: "Invalid input"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+  /cars/{id}:
+    get:
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+          description: The car ID
+      tags:
+      - "car"
+      summary: "Get a car from uhuchain"
+      description: ""
+      operationId: "getCarr"
+      produces:
+      - "application/json"
+      
+      responses:
+        200:
+          description: Car with the given ID
+          schema:
+            $ref: "#/definitions/Car"
+        405:
+          description: "Invalid input"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+  /cars/{id}/policies:
+    post:
+      tags:
+      - "policy"
+      summary: "Add a new policy to a car"
+      description: ""
+      operationId: "addPolicy"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: path
+        name: id
+        required: true
+        type: integer
+        description: The car ID
+      - in: "body"
+        name: "body"
+        description: "Policy that should be added"
+        required: true
+        schema:
+          $ref: "#/definitions/Policy"
+      responses:
+        201:
+          description: Policy was created
+        405:
+          description: "Invalid input"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+  /cars/{carId}/policies/{policyId}/claims:
+    post:
+      tags:
+      - "claim"
+      summary: "Add a new claim to a car"
+      description: ""
+      operationId: "addClaim"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: path
+        name: carId
+        required: true
+        type: integer
+        description: The car ID
+      - in: path
+        name: policyId
+        required: true
+        type: integer
+        description: The policy ID
+      - in: "body"
+        name: "body"
+        description: "Claim that should be added"
+        required: true
+        schema:
+          $ref: "#/definitions/Claim"
+      responses:
+        201:
+          description: Claim was created
+        405:
+          description: "Invalid input"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+securityDefinitions:
+  carledger_auth:
+    type: "oauth2"
+    authorizationUrl: "http://uhuchain.com/oauth/dialog"
+    flow: "implicit"
+    scopes:
+      write:pets: "modify cars in your account"
+      read:pets: "read your cars"
+  api_key:
+    type: "apiKey"
+    name: "api_key"
+    in: "header"
+definitions:
+  Claim:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      date:
+        type: "string"
+      description:
+        type: "string"
+  Policy:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      insuranceId:
+        type: "integer"
+        format: "int64"
+      insuranceName:
+        type: "string"
+      startDate:
+        type: "string"
+      endDate:
+        type: "string"
+      claims:
+        type: "array"
+        items:
+          $ref: "#/definitions/Claim"
+  Car:
+    type: "object"
+    required:
+    - "vehicleId"
+    - "brand"
+    - "model"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      vehicleId:
+        type: "string"
+        example: "THK34SDM6A2D34"
+      model:
+        type: "string"
+        example: "Volkswagen"
+      brand:
+        type: "string"
+        example: "Volkswagen"
+      policies:
+        type: "array"
+        items:
+          $ref: "#/definitions/Policy"
+  ApiResponse:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+      type:
+        type: "string"
+      message:
+        type: "string"
+externalDocs:
+  description: "Find out more about uhuchain"
+  url: "http://uhuchain.com"

@@ -1,0 +1,471 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+networks:
+  uhuchain:
+
+services:
+  zookeeper0:
+    extends:
+      file: base/dc-orderer-kafka-base.yaml
+      service: zookeeper
+    environment:
+      # ========================================================================
+      #     Reference: https://zookeeper.apache.org/doc/r3.4.9/zookeeperAdmin.html#sc_configuration
+      # ========================================================================
+      #
+      # myid
+      # The ID must be unique within the ensemble and should have a value
+      # between 1 and 255.
+      - ZOO_MY_ID=1
+      #
+      # server.x=[hostname]:nnnnn[:nnnnn]
+      # The list of servers that make up the ZK ensemble. The list that is used
+      # by the clients must match the list of ZooKeeper servers that each ZK
+      # server has. There are two port numbers `nnnnn`. The first is what
+      # followers use to connect to the leader, while the second is for leader
+      # election.
+      - ZOO_SERVERS=server.1=zookeeper0:2888:3888 server.2=zookeeper1:2888:3888 server.3=zookeeper2:2888:3888
+    networks:
+      - uhuchain
+
+  zookeeper1:
+    extends:
+      file: base/dc-orderer-kafka-base.yaml
+      service: zookeeper
+    environment:
+      - ZOO_MY_ID=2
+      - ZOO_SERVERS=server.1=zookeeper0:2888:3888 server.2=zookeeper1:2888:3888 server.3=zookeeper2:2888:3888
+    networks:
+      - uhuchain
+
+  zookeeper2:
+    extends:
+      file: base/dc-orderer-kafka-base.yaml
+      service: zookeeper
+    environment:
+      - ZOO_MY_ID=3
+      - ZOO_SERVERS=server.1=zookeeper0:2888:3888 server.2=zookeeper1:2888:3888 server.3=zookeeper2:2888:3888
+    networks:
+      - uhuchain
+
+  kafka0:
+    extends:
+      file: base/dc-orderer-kafka-base.yaml
+      service: kafka
+    environment:
+      # ========================================================================
+      #     Reference: https://kafka.apache.org/documentation/#configuration
+      # ========================================================================
+      #
+      # broker.id
+      - KAFKA_BROKER_ID=0
+      #
+      # min.insync.replicas
+      # Let the value of this setting be M. Data is considered committed when
+      # it is written to at least M replicas (which are then considered in-sync
+      # and belong to the in-sync replica set, or ISR). In any other case, the
+      # write operation returns an error. Then:
+      # 1. If up to M-N replicas -- out of the N (see default.replication.factor
+      # below) that the channel data is written to -- become unavailable,
+      # operations proceed normally.
+      # 2. If more replicas become unavailable, Kafka cannot maintain an ISR set
+      # of M, so it stops accepting writes. Reads work without issues. The
+      # channel becomes writeable again when M replicas get in-sync.
+      - KAFKA_MIN_INSYNC_REPLICAS=2
+      #
+      # default.replication.factor
+      # Let the value of this setting be N. A replication factor of N means that
+      # each channel will have its data replicated to N brokers. These are the
+      # candidates for the ISR set of a channel. As we noted in the
+      # min.insync.replicas section above, not all of these brokers have to be
+      # available all the time. In this sample configuration we choose a
+      # default.replication.factor of K-1 (where K is the total number of brokers in
+      # our Kafka cluster) so as to have the largest possible candidate set for
+      # a channel's ISR. We explicitly avoid setting N equal to K because
+      # channel creations cannot go forward if less than N brokers are up. If N
+      # were set equal to K, a single broker going down would mean that we would
+      # not be able to create new channels, i.e. the crash fault tolerance of
+      # the ordering service would be non-existent.
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=3
+      #
+      # zookeper.connect
+      # Point to the set of Zookeeper nodes comprising a ZK ensemble.
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper0:2181,zookeeper1:2181,zookeeper2:2181
+      #
+      # zookeeper.connection.timeout.ms
+      # The max time that the client waits to establish a connection to
+      # Zookeeper. If not set, the value in zookeeper.session.timeout.ms (below)
+      # is used.
+      #- KAFKA_ZOOKEEPER_CONNECTION_TIMEOUT_MS = 6000
+      #
+      # zookeeper.session.timeout.ms
+      #- KAFKA_ZOOKEEPER_SESSION_TIMEOUT_MS = 6000
+    depends_on:
+      - zookeeper0
+      - zookeeper1
+      - zookeeper2
+    networks:
+      - uhuchain
+
+  kafka1:
+    extends:
+      file: base/dc-orderer-kafka-base.yaml
+      service: kafka
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=3
+      - KAFKA_MIN_INSYNC_REPLICAS=2
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper0:2181,zookeeper1:2181,zookeeper2:2181
+    depends_on:
+      - zookeeper0
+      - zookeeper1
+      - zookeeper2
+    networks:
+      - uhuchain
+
+  kafka2:
+    extends:
+      file: base/dc-orderer-kafka-base.yaml
+      service: kafka
+    environment:
+      - KAFKA_BROKER_ID=2
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=3
+      - KAFKA_MIN_INSYNC_REPLICAS=2
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper0:2181,zookeeper1:2181,zookeeper2:2181
+    depends_on:
+      - zookeeper0
+      - zookeeper1
+      - zookeeper2
+    networks:
+      - uhuchain
+
+  kafka3:
+    extends:
+      file: base/dc-orderer-kafka-base.yaml
+      service: kafka
+    environment:
+      - KAFKA_BROKER_ID=3
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=3
+      - KAFKA_MIN_INSYNC_REPLICAS=2
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper0:2181,zookeeper1:2181,zookeeper2:2181
+    depends_on:
+      - zookeeper0
+      - zookeeper1
+      - zookeeper2
+    networks:
+      - uhuchain
+
+  ca.insurancea.uhuchain.com:
+    container_name: ca.insurancea.uhuchain.com
+    image: hyperledger/fabric-ca
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-insurancea
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.insurancea.uhuchain.com-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/87bff8d5a49ac4f49a99793f4980e212f46bc1a352bef645456bf74920e35f56_sk
+    ports:
+      - "7054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.insurancea.uhuchain.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/87bff8d5a49ac4f49a99793f4980e212f46bc1a352bef645456bf74920e35f56_sk -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/insurancea.uhuchain.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    networks:
+      - uhuchain
+  
+  ca.insuranceb.uhuchain.com:
+    container_name: ca.insuranceb.uhuchain.com
+    image: hyperledger/fabric-ca
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-insuranceb
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.insuranceb.uhuchain.com-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/87bff8d5a49ac4f49a99793f4980e212f46bc1a352bef645456bf74920e35f56_sk
+    ports:
+      - "8054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.insuranceb.uhuchain.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/87bff8d5a49ac4f49a99793f4980e212f46bc1a352bef645456bf74920e35f56_sk -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/insuranceb.uhuchain.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    networks:
+      - uhuchain
+
+  ca.insurancec.uhuchain.com:
+    container_name: ca.insurancec.uhuchain.com
+    image: hyperledger/fabric-ca
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-insurancec
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.insuranceb.uhuchain.com-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/87bff8d5a49ac4f49a99793f4980e212f46bc1a352bef645456bf74920e35f56_sk
+    ports:
+      - "9054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.insurancec.uhuchain.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/87bff8d5a49ac4f49a99793f4980e212f46bc1a352bef645456bf74920e35f56_sk -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/insurancec.uhuchain.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    networks:
+      - uhuchain
+
+  orderer.insurancea.uhuchain.com:
+    container_name: orderer.insurancea.uhuchain.com
+    image: hyperledger/fabric-orderer
+    environment:
+      - ORDERER_GENERAL_LOGLEVEL=debug
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=UhuchainOrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      # enabled TLS
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: orderer
+    volumes:
+    - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+    - ./crypto-config/ordererOrganizations/orderer.uhuchain.com/orderers/orderer.insurancea.uhuchain.com/msp:/var/hyperledger/orderer/msp
+    - ./crypto-config/ordererOrganizations/orderer.uhuchain.com/orderers/orderer.insurancea.uhuchain.com/tls/:/var/hyperledger/orderer/tls
+    ports:
+      - 7050:7050
+    networks:
+      - uhuchain
+    depends_on:
+      - zookeeper0
+      - zookeeper1
+      - zookeeper2
+      - kafka0
+      - kafka1
+      - kafka2
+      - kafka3
+  
+  orderer.insuranceb.uhuchain.com:
+    container_name: orderer.insuranceb.uhuchain.com
+    image: hyperledger/fabric-orderer
+    environment:
+      - ORDERER_GENERAL_LOGLEVEL=debug
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=UhuchainOrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      # enabled TLS
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: orderer
+    volumes:
+    - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+    - ./crypto-config/ordererOrganizations/orderer.uhuchain.com/orderers/orderer.insuranceb.uhuchain.com/msp:/var/hyperledger/orderer/msp
+    - ./crypto-config/ordererOrganizations/orderer.uhuchain.com/orderers/orderer.insuranceb.uhuchain.com/tls/:/var/hyperledger/orderer/tls
+    ports:
+      - 6050:7050
+    networks:
+      - uhuchain
+    depends_on:
+      - zookeeper0
+      - zookeeper1
+      - zookeeper2
+      - kafka0
+      - kafka1
+      - kafka2
+      - kafka3
+  
+  orderer.insurancec.uhuchain.com:
+    container_name: orderer.insurancec.uhuchain.com
+    image: hyperledger/fabric-orderer
+    environment:
+      - ORDERER_GENERAL_LOGLEVEL=debug
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=UhuchainOrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      # enabled TLS
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: orderer
+    volumes:
+    - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+    - ./crypto-config/ordererOrganizations/orderer.uhuchain.com/orderers/orderer.insurancec.uhuchain.com/msp:/var/hyperledger/orderer/msp
+    - ./crypto-config/ordererOrganizations/orderer.uhuchain.com/orderers/orderer.insurancec.uhuchain.com/tls/:/var/hyperledger/orderer/tls
+    ports:
+      - 5050:7050
+    networks:
+      - uhuchain
+    depends_on:
+      - zookeeper0
+      - zookeeper1
+      - zookeeper2
+      - kafka0
+      - kafka1
+      - kafka2
+      - kafka3
+
+  peer0.insurancea.uhuchain.com:
+    container_name: peer0.insurancea.uhuchain.com
+    extends:
+      file: base/peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.insurancea.uhuchain.com
+      - CORE_PEER_ADDRESS=peer0.insurancea.uhuchain.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.insurancea.uhuchain.com:7051
+      - CORE_PEER_LOCALMSPID=InsuranceAMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/insurancea.uhuchain.com/peers/peer0.insurancea.uhuchain.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/insurancea.uhuchain.com/peers/peer0.insurancea.uhuchain.com/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - 7051:7051
+      - 7053:7053
+    networks:
+      - uhuchain
+
+  peer1.insurancea.uhuchain.com:
+    container_name: peer1.insurancea.uhuchain.com
+    extends:
+      file: base/peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.insurancea.uhuchain.com
+      - CORE_PEER_ADDRESS=peer1.insurancea.uhuchain.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.insurancea.uhuchain.com:7051
+      - CORE_PEER_LOCALMSPID=InsuranceAMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/insurancea.uhuchain.com/peers/peer1.insurancea.uhuchain.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/insurancea.uhuchain.com/peers/peer1.insurancea.uhuchain.com/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - 8051:7051
+      - 8053:7053
+    networks:
+      - uhuchain
+
+  peer0.insuranceb.uhuchain.com:
+    container_name: peer0.insuranceb.uhuchain.com
+    extends:
+      file: base/peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.insuranceb.uhuchain.com
+      - CORE_PEER_ADDRESS=peer0.insuranceb.uhuchain.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.insuranceb.uhuchain.com:7051
+      - CORE_PEER_LOCALMSPID=InsuranceBMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/insuranceb.uhuchain.com/peers/peer0.insuranceb.uhuchain.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/insuranceb.uhuchain.com/peers/peer0.insuranceb.uhuchain.com/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - 9051:7051
+      - 9053:7053
+    networks:
+      - uhuchain
+
+  peer1.insuranceb.uhuchain.com:
+    container_name: peer1.insuranceb.uhuchain.com
+    extends:
+      file: base/peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.insuranceb.uhuchain.com
+      - CORE_PEER_ADDRESS=peer1.insuranceb.uhuchain.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.insuranceb.uhuchain.com:7051
+      - CORE_PEER_LOCALMSPID=InsuranceBMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/insuranceb.uhuchain.com/peers/peer1.insuranceb.uhuchain.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/insuranceb.uhuchain.com/peers/peer1.insuranceb.uhuchain.com/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - 10051:7051
+      - 10053:7053
+    networks:
+      - uhuchain
+
+  peer0.insurancec.uhuchain.com:
+    container_name: peer0.insurancec.uhuchain.com
+    extends:
+      file: base/peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.insurancec.uhuchain.com
+      - CORE_PEER_ADDRESS=peer0.insurancec.uhuchain.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.insurancec.uhuchain.com:7051
+      - CORE_PEER_LOCALMSPID=InsuranceCMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/insurancec.uhuchain.com/peers/peer0.insurancec.uhuchain.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/insurancec.uhuchain.com/peers/peer0.insurancec.uhuchain.com/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - 11051:7051
+      - 11053:7053
+    networks:
+      - uhuchain
+
+  peer1.insurancec.uhuchain.com:
+    container_name: peer1.insurancec.uhuchain.com
+    extends:
+      file: base/peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.insurancec.uhuchain.com
+      - CORE_PEER_ADDRESS=peer1.insurancec.uhuchain.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.insurancec.uhuchain.com:7051
+      - CORE_PEER_LOCALMSPID=InsuranceCMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/insurancec.uhuchain.com/peers/peer1.insurancec.uhuchain.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/insurancec.uhuchain.com/peers/peer1.insurancec.uhuchain.com/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - 12051:7051
+      - 12053:7053
+    networks:
+      - uhuchain
+
+  cli:
+    container_name: cli
+    image: hyperledger/fabric-tools
+    tty: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_LOGGING_LEVEL=DEBUG
+      - CORE_PEER_ID=cli
+      - CORE_PEER_ADDRESS=peer0.insurancea.uhuchain.com:7051
+      - CORE_PEER_LOCALMSPID=InsuranceAMSP
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insurancea.uhuchain.com/peers/peer0.insurancea.uhuchain.com/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insurancea.uhuchain.com/peers/peer0.insurancea.uhuchain.com/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insurancea.uhuchain.com/peers/peer0.insurancea.uhuchain.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insurancea.uhuchain.com/users/Admin@insurancea.uhuchain.com/msp
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    #command: /bin/bash -c './scripts/script.sh ${CHANNEL_NAME} ${DELAY}; sleep $TIMEOUT'
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./chaincode/:/opt/gopath/src/github.com/hyperledger/fabric/examples/chaincode/go
+        - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+        - ./scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+        - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+    depends_on:
+      - orderer.insurancea.uhuchain.com
+      - orderer.insuranceb.uhuchain.com
+      - orderer.insurancec.uhuchain.com
+      - peer0.insurancea.uhuchain.com
+      - peer1.insurancea.uhuchain.com
+      - peer0.insuranceb.uhuchain.com
+      - peer1.insuranceb.uhuchain.com
+      - peer0.insurancec.uhuchain.com
+      - peer1.insurancec.uhuchain.com
+    networks:
+      - uhuchain
