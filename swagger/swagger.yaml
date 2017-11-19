@@ -28,6 +28,20 @@ schemes:
 - "http"
 - "https"
 paths:
+  /status:
+    get:
+      tags:
+      - "status"
+      summary: "Get general information about uhuchain"
+      description: ""
+      operationId: "getStatus"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: Status Message
+          schema:
+            $ref: "#/definitions/ApiResponse"
   /cars:
     post:
       tags:

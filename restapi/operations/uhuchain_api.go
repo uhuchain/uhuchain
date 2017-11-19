@@ -22,6 +22,7 @@ import (
 	"github.com/uhuchain/uhuchain/restapi/operations/car"
 	"github.com/uhuchain/uhuchain/restapi/operations/claim"
 	"github.com/uhuchain/uhuchain/restapi/operations/policy"
+	"github.com/uhuchain/uhuchain/restapi/operations/status"
 )
 
 // NewUhuchainAPI creates a new Uhuchain instance
@@ -50,6 +51,9 @@ func NewUhuchainAPI(spec *loads.Document) *UhuchainAPI {
 		}),
 		CarGetCarHandler: car.GetCarHandlerFunc(func(params car.GetCarParams) middleware.Responder {
 			return middleware.NotImplemented("operation CarGetCar has not yet been implemented")
+		}),
+		StatusGetStatusHandler: status.GetStatusHandlerFunc(func(params status.GetStatusParams) middleware.Responder {
+			return middleware.NotImplemented("operation StatusGetStatus has not yet been implemented")
 		}),
 	}
 }
@@ -88,6 +92,8 @@ type UhuchainAPI struct {
 	PolicyAddPolicyHandler policy.AddPolicyHandler
 	// CarGetCarHandler sets the operation handler for the get car operation
 	CarGetCarHandler car.GetCarHandler
+	// StatusGetStatusHandler sets the operation handler for the get status operation
+	StatusGetStatusHandler status.GetStatusHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -165,6 +171,10 @@ func (o *UhuchainAPI) Validate() error {
 
 	if o.CarGetCarHandler == nil {
 		unregistered = append(unregistered, "car.GetCarHandler")
+	}
+
+	if o.StatusGetStatusHandler == nil {
+		unregistered = append(unregistered, "status.GetStatusHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -276,6 +286,11 @@ func (o *UhuchainAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/cars/{id}"] = car.NewGetCar(o.context, o.CarGetCarHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/status"] = status.NewGetStatus(o.context, o.StatusGetStatusHandler)
 
 }
 

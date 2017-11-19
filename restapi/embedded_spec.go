@@ -201,6 +201,26 @@ func init() {
           }
         }
       }
+    },
+    "/status": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "status"
+        ],
+        "summary": "Get general information about uhuchain",
+        "operationId": "getStatus",
+        "responses": {
+          "200": {
+            "description": "Status Message",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
