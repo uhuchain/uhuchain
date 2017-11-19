@@ -74,8 +74,8 @@ paths:
           description: Car with the given ID
           schema:
             $ref: "#/definitions/Car"
-        405:
-          description: "Invalid input"
+        404:
+          description: "Not found"
           schema:
             $ref: "#/definitions/ApiResponse"
   /cars/{id}/policies:
