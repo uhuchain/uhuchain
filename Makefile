@@ -51,7 +51,7 @@ THIRDPARTY_FABRIC_BRANCH    ?= master
 THIRDPARTY_FABRIC_COMMIT    ?= f754f40d3165571cecf5fce43c8a034559983311
 
 # Local variables used by makefile
-PACKAGE_NAME := github.com/uhuchain/uhu-hlf-client
+PACKAGE_NAME := github.com/uhuchain/uhuchain
 ARCH         := $(shell uname -m)
 
 # The version of dep that will be installed by depend-install (or in the CI)
@@ -97,31 +97,13 @@ lint: populate
 spelling:
 	@test/scripts/check_spelling.sh
 
-build-softhsm2-image:
-	 @$(DOCKER_CMD) build --no-cache -q -t "softhsm2-image" \
-		--build-arg FABRIC_BASE_IMAGE=$(FABRIC_BASE_IMAGE) \
-		--build-arg FABRIC_BASE_TAG=$(FABRIC_BASE_TAG) \
-		./test/fixtures/softhsm2
-
 unit-test: checks depend populate
 	@test/scripts/unit.sh
 
 unit-tests: unit-test
 
-integration-tests-nopkcs11: clean depend populate
-	@cd ./test/fixtures && $(DOCKER_COMPOSE_CMD) -f docker-compose.yaml -f docker-compose-nopkcs11-test.yaml up --force-recreate --abort-on-container-exit
-	@cd test/fixtures && ../scripts/check_status.sh "-f ./docker-compose.yaml -f ./docker-compose-nopkcs11-test.yaml"
-
-integration-tests-pkcs11: clean depend populate build-softhsm2-image
-	@cd ./test/fixtures && $(DOCKER_COMPOSE_CMD) -f docker-compose.yaml -f docker-compose-pkcs11-test.yaml up --force-recreate --abort-on-container-exit
-	@cd test/fixtures && ../scripts/check_status.sh "-f ./docker-compose.yaml -f ./docker-compose-pkcs11-test.yaml"
-
-integration-test: integration-tests-nopkcs11
-
-mock-gen:
-	mockgen -build_flags '$(GO_LDFLAGS)' github.com/hyperledger/fabric-sdk-go/api/apitxn ProposalProcessor | sed "s/github.com\/hyperledger\/fabric-sdk-go\/vendor\///g" | goimports > api/apitxn/mocks/mockapitxn.gen.go
-	mockgen -build_flags '$(GO_LDFLAGS)' github.com/hyperledger/fabric-sdk-go/api/apiconfig Config | sed "s/github.com\/hyperledger\/fabric-sdk-go\/vendor\///g" | goimports > api/apiconfig/mocks/mockconfig.gen.go
-	mockgen -build_flags '$(GO_LDFLAGS)' github.com/hyperledger/fabric-sdk-go/api/apifabca FabricCAClient | sed "s/github.com\/hyperledger\/fabric-sdk-go\/vendor\///g" | goimports > api/apifabca/mocks/mockfabriccaclient.gen.go
+integration-test: clean depend populate
+	@cd ./test/uhuchain-network-dev && $(DOCKER_COMPOSE_CMD) -f docker-compose.yaml up --force-recreate --abort-on-container-exit
 
 channel-config-gen:
 	@echo "Generating test channel configuration transactions and blocks ..."
@@ -146,9 +128,11 @@ endif
 populate-clean:
 	rm -Rf vendor
 
+run-server:
+	@cd ./cmd/uhuchain-server && $(GO_CMD) install && uhuchain-server --scheme=http --port=3333
+
 clean:
 	$(GO_CMD) clean
 	rm -Rf /tmp/enroll_user /tmp/msp /tmp/keyvaluestore /tmp/hfc-kvs
 	rm -f integration-report.xml report.xml
-	rm -f test/fixtures/tls/fabricca/certs/server/ca.org*.example.com-cert.pem
 	cd test/fixtures && $(DOCKER_COMPOSE_CMD) -f docker-compose.yaml -f docker-compose-nopkcs11-test.yaml -f docker-compose-pkcs11-test.yaml down
