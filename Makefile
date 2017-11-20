@@ -103,6 +103,7 @@ unit-test: checks depend populate
 unit-tests: unit-test
 
 integration-test: clean depend populate build-linux
+	@echo "Starting uhuchain test network ..."
 	@cd ./test/uhuchain-network-dev && $(DOCKER_COMPOSE_CMD) -f docker-compose.yaml up -d
 
 channel-config-gen:
@@ -129,6 +130,7 @@ populate-clean:
 	rm -Rf vendor
 
 build-linux:
+	@echo "Building uhuchain-server executable for linux ..."
 	env GOOS=linux GOARCH=amd64 $(GO_CMD) build -o build/linux/uhuchain-server ./cmd/uhuchain-server
 
 install-server:
