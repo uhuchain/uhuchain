@@ -9,7 +9,7 @@ import (
 	"net/http"
 
 	middleware "github.com/go-openapi/runtime/middleware"
-	"github.com/uhuchain/uhuchain/models"
+	"github.com/uhuchain/uhuchain-api/models"
 )
 
 // GetStatusHandlerFunc turns a function with the right signature into a get status handler

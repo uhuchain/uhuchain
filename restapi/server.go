@@ -20,7 +20,7 @@ import (
 	flags "github.com/jessevdk/go-flags"
 	graceful "github.com/tylerb/graceful"
 
-	"github.com/uhuchain/uhuchain/restapi/operations"
+	"github.com/uhuchain/uhuchain-api/restapi/operations"
 )
 
 const (

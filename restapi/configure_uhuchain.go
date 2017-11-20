@@ -11,15 +11,16 @@ import (
 	middleware "github.com/go-openapi/runtime/middleware"
 	graceful "github.com/tylerb/graceful"
 
-	"github.com/uhuchain/uhuchain/restapi/operations"
-	"github.com/uhuchain/uhuchain/restapi/operations/car"
-	"github.com/uhuchain/uhuchain/restapi/operations/claim"
-	"github.com/uhuchain/uhuchain/restapi/operations/policy"
+	"github.com/uhuchain/uhuchain-api/restapi/operations"
+	"github.com/uhuchain/uhuchain-api/restapi/operations/car"
+	"github.com/uhuchain/uhuchain-api/restapi/operations/claim"
+	"github.com/uhuchain/uhuchain-api/restapi/operations/policy"
+	"github.com/uhuchain/uhuchain-api/restapi/operations/status"
 )
 
 // This file is safe to edit. Once it exists it will not be overwritten
 
-//go:generate swagger generate server --target .. --name uhuchain --spec ../swagger/swagger.yaml
+//go:generate swagger generate server --target .. --name uhuchain-api --spec ../swagger/swagger.yaml
 
 func configureFlags(api *operations.UhuchainAPI) {
 	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }
@@ -50,6 +51,9 @@ func configureAPI(api *operations.UhuchainAPI) http.Handler {
 	})
 	api.CarGetCarHandler = car.GetCarHandlerFunc(func(params car.GetCarParams) middleware.Responder {
 		return middleware.NotImplemented("operation car.GetCar has not yet been implemented")
+	})
+	api.StatusGetStatusHandler = status.GetStatusHandlerFunc(func(params status.GetStatusParams) middleware.Responder {
+		return middleware.NotImplemented("operation status.GetStatus has not yet been implemented")
 	})
 
 	api.ServerShutdown = func() {}

@@ -19,10 +19,10 @@ import (
 	strfmt "github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 
-	"github.com/uhuchain/uhuchain/restapi/operations/car"
-	"github.com/uhuchain/uhuchain/restapi/operations/claim"
-	"github.com/uhuchain/uhuchain/restapi/operations/policy"
-	"github.com/uhuchain/uhuchain/restapi/operations/status"
+	"github.com/uhuchain/uhuchain-api/restapi/operations/car"
+	"github.com/uhuchain/uhuchain-api/restapi/operations/claim"
+	"github.com/uhuchain/uhuchain-api/restapi/operations/policy"
+	"github.com/uhuchain/uhuchain-api/restapi/operations/status"
 )
 
 // NewUhuchainAPI creates a new Uhuchain instance

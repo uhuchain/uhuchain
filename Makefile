@@ -102,8 +102,8 @@ unit-test: checks depend populate
 
 unit-tests: unit-test
 
-integration-test: clean depend populate
-	@cd ./test/uhuchain-network-dev && $(DOCKER_COMPOSE_CMD) -f docker-compose.yaml up --force-recreate --abort-on-container-exit
+integration-test: clean depend populate build-linux
+	@cd ./test/uhuchain-network-dev && $(DOCKER_COMPOSE_CMD) -f docker-compose.yaml up -d
 
 channel-config-gen:
 	@echo "Generating test channel configuration transactions and blocks ..."
@@ -128,11 +128,17 @@ endif
 populate-clean:
 	rm -Rf vendor
 
-run-server:
-	@cd ./cmd/uhuchain-server && $(GO_CMD) install && uhuchain-server --scheme=http --port=3333
+build-linux:
+	env GOOS=linux GOARCH=amd64 $(GO_CMD) build -o build/linux/uhuchain-server ./cmd/uhuchain-server
+
+install-server:
+	@cd ./cmd/uhuchain-server && $(GO_CMD) install
+
+run-server-local: install-server
+	uhuchain-server --scheme=http --port=3333
 
 clean:
 	$(GO_CMD) clean
 	rm -Rf /tmp/enroll_user /tmp/msp /tmp/keyvaluestore /tmp/hfc-kvs
 	rm -f integration-report.xml report.xml
-	cd test/fixtures && $(DOCKER_COMPOSE_CMD) -f docker-compose.yaml -f docker-compose-nopkcs11-test.yaml -f docker-compose-pkcs11-test.yaml down
+	@cd ./test/uhuchain-network-dev && $(DOCKER_COMPOSE_CMD) -f docker-compose.yaml down

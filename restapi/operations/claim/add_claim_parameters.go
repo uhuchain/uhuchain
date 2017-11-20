@@ -16,7 +16,7 @@ import (
 
 	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/uhuchain/uhuchain/models"
+	"github.com/uhuchain/uhuchain-api/models"
 )
 
 // NewAddClaimParams creates a new AddClaimParams object

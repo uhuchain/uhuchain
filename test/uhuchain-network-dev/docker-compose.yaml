@@ -243,3 +243,36 @@ services:
       - peer1.insurancec.uhuchain.com
     networks:
       - uhuchain
+
+  uhuchain-server:
+    container_name: uhuchain-server
+    image: hyperledger/fabric-tools
+    tty: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_LOGGING_LEVEL=DEBUG
+    working_dir: /opt/uhuchain
+    command: /bin/bash -c './uhuchain-server --scheme=http --host=0.0.0.0 --port=3333'
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../../chaincode/:/opt/uhuchain/chaincode
+        - ./crypto-config:/opt/uhuchain/crypto-config/
+        - ./scripts:/opt/uhuchain/scripts/
+        - ./channel-artifacts:/opt/uhuchain/channel-artifacts
+        - ../../build/linux/uhuchain-server:/opt/uhuchain/uhuchain-server
+        - ../client-config:/opt/uhuchain/client-config
+    depends_on:
+      - orderer.insurancea.uhuchain.com
+      - orderer.insuranceb.uhuchain.com
+      - orderer.insurancec.uhuchain.com
+      - peer0.insurancea.uhuchain.com
+      - peer1.insurancea.uhuchain.com
+      - peer0.insuranceb.uhuchain.com
+      - peer1.insuranceb.uhuchain.com
+      - peer0.insurancec.uhuchain.com
+      - peer1.insurancec.uhuchain.com
+    ports:
+      - 3333:3333
+    networks:
+      - uhuchain

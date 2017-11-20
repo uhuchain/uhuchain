@@ -13,7 +13,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 
-	"github.com/uhuchain/uhuchain/models"
+	"github.com/uhuchain/uhuchain-api/models"
 )
 
 // NewAddCarParams creates a new AddCarParams object

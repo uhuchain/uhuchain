@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-openapi/runtime"
 
-	"github.com/uhuchain/uhuchain/models"
+	"github.com/uhuchain/uhuchain-api/models"
 )
 
 // GetCarOKCode is the HTTP code returned for type GetCarOK

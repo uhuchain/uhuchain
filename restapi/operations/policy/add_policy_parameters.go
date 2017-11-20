@@ -16,7 +16,7 @@ import (
 
 	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/uhuchain/uhuchain/models"
+	"github.com/uhuchain/uhuchain-api/models"
 )
 
 // NewAddPolicyParams creates a new AddPolicyParams object
