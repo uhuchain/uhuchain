@@ -2,6 +2,12 @@
 
 The uhuchain api server offers a RESTful API to interact with the uhuchain ledger.
 
+## Requirements
+
+* Go 1.9.x
+* Docker
+* Docker Compose
+
 ## Installation
 
 Use the `make` file to install all required dependencies.
@@ -17,7 +23,7 @@ make depend-install
 The repo includes a hyperledger test network consisting of three parties and an ordering service.
 
 Running `make integration-test` will 
-* start the uhuchain test network 
+* start the uhuchain test network using `docker-compose` 
 * create an `uhuchain-server` container exposing port 3333
 * run the integration tests in `test/integration`
 * compile and install the `uhuchain-server` binary
