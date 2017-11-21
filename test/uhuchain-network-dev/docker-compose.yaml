@@ -224,7 +224,7 @@ services:
       - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insurancea.uhuchain.com/peers/peer0.insurancea.uhuchain.com/tls/ca.crt
       - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insurancea.uhuchain.com/users/Admin@insurancea.uhuchain.com/msp
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
-    #command: /bin/bash -c './scripts/script.sh ${CHANNEL_NAME} ${DELAY}; sleep $TIMEOUT'
+    command: /bin/bash -c './scripts/script.sh'
     volumes:
         - /var/run/:/host/var/run/
         - ./chaincode/:/opt/gopath/src/github.com/hyperledger/fabric/examples/chaincode/go
@@ -272,6 +272,7 @@ services:
       - peer1.insuranceb.uhuchain.com
       - peer0.insurancec.uhuchain.com
       - peer1.insurancec.uhuchain.com
+      - cli
     ports:
       - 3333:3333
     networks:

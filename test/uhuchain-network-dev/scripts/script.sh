@@ -11,14 +11,13 @@ echo "Uhuchain network end-to-end test"
 echo
 CHANNEL_NAME="$1"
 DELAY="$2"
+RUNTEST="$3"
 : ${CHANNEL_NAME:="car-ledger"}
 : ${TIMEOUT:="80"}
-: ${DELAY:="10"}
+: ${DELAY:="3"}
 COUNTER=1
 MAX_RETRY=5
 ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/orderer.uhuchain.com/orderers/orderer.insurancea.uhuchain.com/msp/tlscacerts/tlsca.orderer.uhuchain.com-cert.pem
-
-echo "Channel name : "$CHANNEL_NAME
 
 # verify the result of the end-to-end test
 verifyResult () {
@@ -29,6 +28,9 @@ verifyResult () {
    		exit 1
 	fi
 }
+
+
+echo "Channel name : "$CHANNEL_NAME
 
 setGlobals () {
 
@@ -42,7 +44,7 @@ setGlobals () {
 			CORE_PEER_ADDRESS=peer1.insurancea.uhuchain.com:7051
 			CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insurancea.uhuchain.com/users/Admin@insurancea.uhuchain.com/msp
 		fi
-	else
+	elif [ $1 -eq 2 -o $1 -eq 3 ] ; then
 		CORE_PEER_LOCALMSPID="InsuranceBMSP"
 		CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insuranceb.uhuchain.com/peers/peer0.insuranceb.uhuchain.com/tls/ca.crt
 		CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insuranceb.uhuchain.com/users/Admin@insuranceb.uhuchain.com/msp
@@ -50,6 +52,16 @@ setGlobals () {
 			CORE_PEER_ADDRESS=peer0.insuranceb.uhuchain.com:7051
 		else
 			CORE_PEER_ADDRESS=peer1.insuranceb.uhuchain.com:7051
+			CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insuranceb.uhuchain.com/users/Admin@insuranceb.uhuchain.com/msp
+		fi
+	else
+		CORE_PEER_LOCALMSPID="InsuranceCMSP"
+		CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insurancec.uhuchain.com/peers/peer0.insurancec.uhuchain.com/tls/ca.crt
+		CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insurancec.uhuchain.com/users/Admin@insurancec.uhuchain.com/msp
+		if [ $1 -eq 4 ]; then
+			CORE_PEER_ADDRESS=peer0.insurancec.uhuchain.com:7051
+		else
+			CORE_PEER_ADDRESS=peer1.insurancec.uhuchain.com:7051
 		fi
 	fi
 
@@ -105,7 +117,7 @@ joinWithRetry () {
 }
 
 joinChannel () {
-	for ch in 0 1 2 3; do
+	for ch in 0 1 2 3 4 5; do
 		setGlobals $ch
 		joinWithRetry $ch
 		echo "===================== PEER$ch joined on the channel \"$CHANNEL_NAME\" ===================== "
@@ -188,6 +200,9 @@ chaincodeInvoke () {
 	echo
 }
 
+echo
+echo "================== Preparing Uhuchain network  ==================== "
+echo
 ## Create channel
 echo "Creating channel..."
 createChannel
@@ -201,36 +216,56 @@ echo "Updating anchor peers for insurancea..."
 updateAnchorPeers 0
 echo "Updating anchor peers for insuranceb..."
 updateAnchorPeers 2
+echo "Updating anchor peers for insurancec..."
+updateAnchorPeers 4
 
 ## Install chaincode on Peer0/insurancea and Peer2/insuranceb
 echo "Installing chaincode on insurancea/peer0..."
 installChaincode 0
-echo "Install chaincode on insuranceb/peer2..."
+echo "Installing chaincode on insurancea/peer1..."
+installChaincode 1
+echo "Installing chaincode on insuranceb/peer0..."
 installChaincode 2
-
-#Instantiate chaincode on Peer2/insuranceb
-echo "Instantiating chaincode on insuranceb/peer2..."
-instantiateChaincode 2
-
-#Query on chaincode on Peer0/insurancea
-echo "Querying chaincode on insurancea/peer0..."
-chaincodeQuery 0 100
-
-#Invoke on chaincode on Peer0/insurancea
-echo "Sending invoke transaction on insurancea/peer0..."
-chaincodeInvoke 0
-
-## Install chaincode on Peer3/insuranceb
-echo "Installing chaincode on insuranceb/peer3..."
+echo "Installing chaincode on insuranceb/peer1..."
 installChaincode 3
+echo "Installing chaincode on insurancec/peer0..."
+installChaincode 4
+echo "Installing chaincode on insurancec/peer1..."
+installChaincode 5
 
-#Query on chaincode on Peer3/insuranceb, check if the result is 90
-echo "Querying chaincode on insuranceb/peer3..."
-chaincodeQuery 3 90
+#Instantiate chaincode on Peer0/insurancea
+echo "Instantiating chaincode on insurancea/peer0..."
+instantiateChaincode 0
 
 echo
-echo "========= All GOOD, Uhuchain network end-to-end execution completed =========== "
+echo "========= All GOOD, preparation of Uhuchain network completed =========== "
 echo
+
+if [ "$RUNTEST" == "test" ]; then
+	echo
+	echo "========= Starting Uhuchain network integration tests =========== "
+	echo
+
+	#Query on chaincode on Peer0/insurancea
+	echo "Querying chaincode on insurancea/peer0..."
+	chaincodeQuery 0 100
+
+	#Invoke on chaincode on Peer0/insurancea
+	echo "Sending invoke transaction on insurancea/peer0..."
+	chaincodeInvoke 0
+
+	## Install chaincode on Peer3/insuranceb
+	echo "Installing chaincode on insuranceb/peer3..."
+	installChaincode 3
+
+	#Query on chaincode on Peer3/insuranceb, check if the result is 90
+	echo "Querying chaincode on insuranceb/peer3..."
+	chaincodeQuery 3 90
+
+	echo
+	echo "========= All GOOD, Uhuchain network integration test completed =========== "
+	echo
+fi
 
 echo
 echo " _____   _   _   ____   "

@@ -106,6 +106,10 @@ integration-test: clean depend populate build-linux
 	@echo "Starting uhuchain test network ..."
 	@cd ./test/uhuchain-network-dev && $(DOCKER_COMPOSE_CMD) -f docker-compose.yaml up -d
 
+integration-test-no-rebuild: clean depend populate
+	@echo "Starting uhuchain test network ..."
+	@cd ./test/uhuchain-network-dev && $(DOCKER_COMPOSE_CMD) -f docker-compose.yaml up -d
+
 channel-config-gen:
 	@echo "Generating test channel configuration transactions and blocks ..."
 	@$(DOCKER_CMD) run -i \
