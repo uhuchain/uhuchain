@@ -102,13 +102,17 @@ unit-test: checks depend populate
 
 unit-tests: unit-test
 
-integration-test: clean depend populate build-linux
-	@echo "Starting uhuchain test network ..."
-	@cd ./test/uhuchain-network-dev && $(DOCKER_COMPOSE_CMD) -f docker-compose.yaml up -d
+prepare-network:
+	@echo "=========== Preparing network ==========="
+	@cd ./test/uhuchain-network-dev/scripts && chmod +x prepare.sh && ./prepare.sh
 
-integration-test-no-rebuild: clean depend populate
-	@echo "Starting uhuchain test network ..."
-	@cd ./test/uhuchain-network-dev && $(DOCKER_COMPOSE_CMD) -f docker-compose.yaml up -d
+exec-integration-test: prepare-network
+	@echo "=========== Executing integration tests ==========="
+	@cd ./test/integration && $(GO_CMD) test
+
+integration-test: clean depend populate
+	@echo "=========== Starting uhuchain test network ==========="
+	@cd ./test/uhuchain-network-dev && $(DOCKER_COMPOSE_CMD) -f docker-compose.yaml up
 
 channel-config-gen:
 	@echo "Generating test channel configuration transactions and blocks ..."
@@ -138,9 +142,11 @@ build-linux:
 	env GOOS=linux GOARCH=amd64 $(GO_CMD) build -o build/linux/uhuchain-server ./cmd/uhuchain-server
 
 install-server:
+	@echo "=========== Install Uhuchain server ==========="
 	@cd ./cmd/uhuchain-server && $(GO_CMD) install
 
-run-server-local: install-server
+test-and-run-server: exec-integration-test install-server
+	@echo "=========== Execute Uhuchain server ==========="
 	uhuchain-server --scheme=http --port=3333
 
 clean:

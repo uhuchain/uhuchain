@@ -25,7 +25,7 @@ func init() {
 		ChannelID:       "car-ledger",
 		OrgID:           "InsuranceA",
 		OrdererOrgID:    "UhuchainOrderer",
-		ChannelConfig:   "../uhuchain-network-dev/channel-artifact/channel.tx",
+		ChannelConfig:   "../uhuchain-network-dev/channel-artifacts/channel.tx",
 		ConnectEventHub: true,
 		UserID:          "User1",
 		AdminUserID:     "Admin",

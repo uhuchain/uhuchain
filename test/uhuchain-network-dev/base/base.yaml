@@ -24,4 +24,11 @@ services:
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    logging:
+      driver: none 
     command: peer node start
+    
+  orderer-base:
+    image: hyperledger/fabric-orderer
+    logging:
+      driver: none 

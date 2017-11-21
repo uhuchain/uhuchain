@@ -17,7 +17,7 @@ RUNTEST="$3"
 : ${DELAY:="1"}
 COUNTER=1
 MAX_RETRY=5
-ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/orderer.uhuchain.com/orderers/orderer.insurancea.uhuchain.com/msp/tlscacerts/tlsca.orderer.uhuchain.com-cert.pem
+ORDERER_CA=/opt/gopath/src/github.com/uhuchain/uhuchain-api/test/uhuchain-network-dev/crypto-config/ordererOrganizations/orderer.uhuchain.com/orderers/orderer.insurancea.uhuchain.com/msp/tlscacerts/tlsca.orderer.uhuchain.com-cert.pem
 
 # verify the result of the end-to-end test
 verifyResult () {
@@ -36,28 +36,28 @@ setGlobals () {
 
 	if [ $1 -eq 0 -o $1 -eq 1 ] ; then
 		CORE_PEER_LOCALMSPID="InsuranceAMSP"
-		CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insurancea.uhuchain.com/peers/peer0.insurancea.uhuchain.com/tls/ca.crt
-		CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insurancea.uhuchain.com/users/Admin@insurancea.uhuchain.com/msp
+		CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/uhuchain/uhuchain-api/test/uhuchain-network-dev/crypto-config/peerOrganizations/insurancea.uhuchain.com/peers/peer0.insurancea.uhuchain.com/tls/ca.crt
+		CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/uhuchain/uhuchain-api/test/uhuchain-network-dev/crypto-config/peerOrganizations/insurancea.uhuchain.com/users/Admin@insurancea.uhuchain.com/msp
 		if [ $1 -eq 0 ]; then
 			CORE_PEER_ADDRESS=peer0.insurancea.uhuchain.com:7051
 		else
 			CORE_PEER_ADDRESS=peer1.insurancea.uhuchain.com:7051
-			CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insurancea.uhuchain.com/users/Admin@insurancea.uhuchain.com/msp
+			CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/uhuchain/uhuchain-api/test/uhuchain-network-dev/crypto-config/peerOrganizations/insurancea.uhuchain.com/users/Admin@insurancea.uhuchain.com/msp
 		fi
 	elif [ $1 -eq 2 -o $1 -eq 3 ] ; then
 		CORE_PEER_LOCALMSPID="InsuranceBMSP"
-		CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insuranceb.uhuchain.com/peers/peer0.insuranceb.uhuchain.com/tls/ca.crt
-		CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insuranceb.uhuchain.com/users/Admin@insuranceb.uhuchain.com/msp
+		CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/uhuchain/uhuchain-api/test/uhuchain-network-dev/crypto-config/peerOrganizations/insuranceb.uhuchain.com/peers/peer0.insuranceb.uhuchain.com/tls/ca.crt
+		CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/uhuchain/uhuchain-api/test/uhuchain-network-dev/crypto-config/peerOrganizations/insuranceb.uhuchain.com/users/Admin@insuranceb.uhuchain.com/msp
 		if [ $1 -eq 2 ]; then
 			CORE_PEER_ADDRESS=peer0.insuranceb.uhuchain.com:7051
 		else
 			CORE_PEER_ADDRESS=peer1.insuranceb.uhuchain.com:7051
-			CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insuranceb.uhuchain.com/users/Admin@insuranceb.uhuchain.com/msp
+			CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/uhuchain/uhuchain-api/test/uhuchain-network-dev/crypto-config/peerOrganizations/insuranceb.uhuchain.com/users/Admin@insuranceb.uhuchain.com/msp
 		fi
 	else
 		CORE_PEER_LOCALMSPID="InsuranceCMSP"
-		CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insurancec.uhuchain.com/peers/peer0.insurancec.uhuchain.com/tls/ca.crt
-		CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insurancec.uhuchain.com/users/Admin@insurancec.uhuchain.com/msp
+		CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/uhuchain/uhuchain-api/test/uhuchain-network-dev/crypto-config/peerOrganizations/insurancec.uhuchain.com/peers/peer0.insurancec.uhuchain.com/tls/ca.crt
+		CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/uhuchain/uhuchain-api/test/uhuchain-network-dev/crypto-config/peerOrganizations/insurancec.uhuchain.com/users/Admin@insurancec.uhuchain.com/msp
 		if [ $1 -eq 4 ]; then
 			CORE_PEER_ADDRESS=peer0.insurancec.uhuchain.com:7051
 		else
@@ -72,9 +72,9 @@ createChannel() {
 	setGlobals 0
 
   if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
-		peer channel create -o orderer.insurancea.uhuchain.com:7050 -c $CHANNEL_NAME -t 10 -f ./channel-artifacts/channel.tx >&log.txt
+		peer channel create -o orderer.insurancea.uhuchain.com:7050 -c $CHANNEL_NAME -t 10 -f ../channel-artifacts/channel.tx >&log.txt
 	else
-		peer channel create -o orderer.insurancea.uhuchain.com:7050 -c $CHANNEL_NAME -t 10 -f ./channel-artifacts/channel.tx --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA >&log.txt
+		peer channel create -o orderer.insurancea.uhuchain.com:7050 -c $CHANNEL_NAME -t 10 -f ../channel-artifacts/channel.tx --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA >&log.txt
 	fi
 	res=$?
 	cat log.txt
@@ -88,9 +88,9 @@ updateAnchorPeers() {
   setGlobals $PEER
 
   if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
-		peer channel update -o orderer.insurancea.uhuchain.com:7050 -c $CHANNEL_NAME -f ./channel-artifacts/${CORE_PEER_LOCALMSPID}anchors.tx >&log.txt
+		peer channel update -o orderer.insurancea.uhuchain.com:7050 -c $CHANNEL_NAME -f ../channel-artifacts/${CORE_PEER_LOCALMSPID}anchors.tx >&log.txt
 	else
-		peer channel update -o orderer.insurancea.uhuchain.com:7050 -c $CHANNEL_NAME -f ./channel-artifacts/${CORE_PEER_LOCALMSPID}anchors.tx --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA >&log.txt
+		peer channel update -o orderer.insurancea.uhuchain.com:7050 -c $CHANNEL_NAME -f ../channel-artifacts/${CORE_PEER_LOCALMSPID}anchors.tx --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA >&log.txt
 	fi
 	res=$?
 	cat log.txt
