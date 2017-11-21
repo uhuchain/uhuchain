@@ -7,6 +7,7 @@ package main
 
 import (
 	"log"
+	"os"
 	"testing"
 
 	"github.com/uhuchain/uhuchain-api/ledger"
@@ -17,6 +18,7 @@ var setup ledger.BaseSetupImpl
 var initArgs = [][]byte{[]byte("init"), []byte("a"), []byte("100"), []byte("b"), []byte("200")}
 
 func init() {
+	log.SetOutput(os.Stdout)
 	log.Println("Initialize uhuchain ledger client ")
 	setup = ledger.BaseSetupImpl{
 		ConfigFile:      "../client-config/config.yaml",
