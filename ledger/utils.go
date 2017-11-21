@@ -4,7 +4,7 @@ Copyright Uhuchain. All Rights Reserved.
 SPDX-License-Identifier: Apache-2.0
 */
 
-package config
+package ledger
 
 import (
 	"math/rand"

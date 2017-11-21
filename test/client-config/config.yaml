@@ -58,7 +58,7 @@ client:
 
   # Needed to load users crypto keys and certs.
   cryptoconfig:
-    path: $GOPATH/src/github.com/uhuchain/uhuchain/test/uhuchain-netowork-dev/crypto-config
+    path: $GOPATH/src/github.com/uhuchain/uhuchain-api/test/uhuchain-network-dev/crypto-config
 
   # Some SDKs support pluggable KV stores, the properties under "credentialStore"
   # are implementation specific
@@ -100,7 +100,7 @@ channels:
     # operational decisions to share loads from applications among the orderers.  The values must
     # be "names" of orgs defined under "organizations/peers"
     orderers:
-      - UhuchainOrderer
+      - orderer.insurancea.uhuchain.com
 
     # Required. list of peers from participating orgs
     peers:
@@ -128,8 +128,8 @@ channels:
     # this list with the query results of getInstalledChaincodes() and getInstantiatedChaincodes()
     chaincodes:
       # the format follows the "canonical name" of chaincodes by fabric code
-      - example02:v1
-      - marbles:1.0
+      # - example02:v1
+      # - marbles:1.0
 
     peer1.insurancea.uhuchain.com:
     peer0.insuranceb.uhuchain.com:
@@ -228,7 +228,7 @@ orderers:
 
     tlsCACerts:
       # Certificate location absolute path
-      path: $GOPATH/src/github.com/uhuchain/uhu-hlf-client/test/uhuchain-network-dev/crypto-config/ordererOrganizations/orderer.uhuchain.com/tlsca/tlsca.orderer.uhuchain.com-cert.pem
+      path: $GOPATH/src/github.com/uhuchain/uhuchain-api/test/uhuchain-network-dev/crypto-config/ordererOrganizations/orderer.uhuchain.com/tlsca/tlsca.orderer.uhuchain.com-cert.pem
   
   orderer.insuranceb.uhuchain.com:
     url: grpcs://orderer.insuranceb.uhuchain.com:7050
@@ -241,7 +241,7 @@ orderers:
 
     tlsCACerts:
       # Certificate location absolute path
-      path: $GOPATH/src/github.com/uhuchain/uhu-hlf-client/test/uhuchain-network-dev/crypto-config/ordererOrganizations/orderer.uhuchain.com/tlsca/tlsca.orderer.uhuchain.com-cert.pem
+      path: $GOPATH/src/github.com/uhuchain/uhuchain-api/test/uhuchain-network-dev/crypto-config/ordererOrganizations/orderer.uhuchain.com/tlsca/tlsca.orderer.uhuchain.com-cert.pem
 
   orderer.insurancec.uhuchain.com:
     url: grpcs://orderer.insurancec.uhuchain.com:7050
@@ -254,7 +254,7 @@ orderers:
 
     tlsCACerts:
       # Certificate location absolute path
-      path: $GOPATH/src/github.com/uhuchain/uhu-hlf-client/test/uhuchain-network-dev/crypto-config/ordererOrganizations/orderer.uhuchain.com/tlsca/tlsca.orderer.uhuchain.com-cert.pem
+      path: $GOPATH/src/github.com/uhuchain/uhuchain-api/test/uhuchain-network-dev/crypto-config/ordererOrganizations/orderer.uhuchain.com/tlsca/tlsca.orderer.uhuchain.com-cert.pem
 #
 # List of peers to send various requests to, including endorsement, query
 # and event listener registration.
@@ -273,7 +273,16 @@ peers:
 
     tlsCACerts:
       # Certificate location absolute path
-      path: $GOPATH/src/github.com/uhuchain/uhu-hlf-client/test/uhuchain-network-dev/crypto-config/peerOrganizations/insurancea.uhuchain.com/tlsca/tlsca.insurancea.uhuchain.com-cert.pem
+      path: $GOPATH/src/github.com/uhuchain/uhuchain-api/test/uhuchain-network-dev/crypto-config/peerOrganizations/insurancea.uhuchain.com/tlsca/tlsca.insurancea.uhuchain.com-cert.pem
+  
+  peer1.insurancea.uhuchain.com:
+    url: grpcs://peer1.insurancea.uhuchain.com:7051
+    eventUrl: grpcs://peer1.insurancea.uhuchain.com:7053
+    grpcOptions:
+      ssl-target-name-override: peer1.insurancea.uhuchain.com
+      grpc.http2.keepalive_time: 15
+    tlsCACerts:
+      path: $GOPATH/src/github.com/uhuchain/uhuchain-api/test/uhuchain-network-dev/crypto-config/peerOrganizations/insurancea.uhuchain.com/tlsca/tlsca.insurancea.uhuchain.com-cert.pem
   
   peer0.insuranceb.uhuchain.com:
     url: grpcs://peer0.insuranceb.uhuchain.com:7051
@@ -282,7 +291,16 @@ peers:
       ssl-target-name-override: peer0.insuranceb.uhuchain.com
       grpc.http2.keepalive_time: 15
     tlsCACerts:
-      path: $GOPATH/src/github.com/uhuchain/uhu-hlf-client/test/uhuchain-network-dev/crypto-config/peerOrganizations/insuranceb.uhuchain.com/tlsca/tlsca.insuranceb.uhuchain.com-cert.pem
+      path: $GOPATH/src/github.com/uhuchain/uhuchain-api/test/uhuchain-network-dev/crypto-config/peerOrganizations/insuranceb.uhuchain.com/tlsca/tlsca.insuranceb.uhuchain.com-cert.pem
+
+  peer1.insuranceb.uhuchain.com:
+    url: grpcs://peer1.insuranceb.uhuchain.com:7051
+    eventUrl: grpcs://peer1.insuranceb.uhuchain.com:7053
+    grpcOptions:
+      ssl-target-name-override: peer1.insuranceb.uhuchain.com
+      grpc.http2.keepalive_time: 15
+    tlsCACerts:
+      path: $GOPATH/src/github.com/uhuchain/uhuchain-api/test/uhuchain-network-dev/crypto-config/peerOrganizations/insuranceb.uhuchain.com/tlsca/tlsca.insuranceb.uhuchain.com-cert.pem
 
   peer0.insurancec.uhuchain.com:
     url: grpcs://peer0.insurancec.uhuchain.com:7051
@@ -291,7 +309,16 @@ peers:
       ssl-target-name-override: peer0.insurancec.uhuchain.com
       grpc.http2.keepalive_time: 15
     tlsCACerts:
-      path: $GOPATH/src/github.com/uhuchain/uhu-hlf-client/test/uhuchain-network-dev/crypto-config/peerOrganizations/insurancec.uhuchain.com/tlsca/tlsca.insurancec.uhuchain.com-cert.pem
+      path: $GOPATH/src/github.com/uhuchain/uhuchain-api/test/uhuchain-network-dev/crypto-config/peerOrganizations/insurancec.uhuchain.com/tlsca/tlsca.insurancec.uhuchain.com-cert.pem
+
+  peer1.insurancec.uhuchain.com:
+    url: grpcs://peer1.insurancec.uhuchain.com:7051
+    eventUrl: grpcs://peer1.insurancec.uhuchain.com:7053
+    grpcOptions:
+      ssl-target-name-override: peer1.insurancec.uhuchain.com
+      grpc.http2.keepalive_time: 15
+    tlsCACerts:
+      path: $GOPATH/src/github.com/uhuchain/uhuchain-api/test/uhuchain-network-dev/crypto-config/peerOrganizations/insurancec.uhuchain.com/tlsca/tlsca.insurancec.uhuchain.com-cert.pem
 
 #
 # Fabric-CA is a special kind of Certificate Authority provided by Hyperledger Fabric which allows
@@ -307,11 +334,11 @@ certificateAuthorities:
       verify: true
     tlsCACerts:
       # Comma-Separated list of paths
-      path: $GOPATH/src/github.com/uhuchain/uhu-hlf-client/test/fixtures/tls/fabricca/certs/ca_root.pem
+      path: $GOPATH/src/github.com/uhuchain/uhuchain-api/test/fixtures/tls/fabricca/certs/ca_root.pem
       # Client key and cert for SSL handshake with Fabric CA
       client:
-       keyfile: $GOPATH/src/github.com/uhuchain/uhu-hlf-client/test/fixtures/tls/fabricca/certs/client/client_fabric_client-key.pem
-       certfile: $GOPATH/src/github.com/uhuchain/uhu-hlf-client/test/fixtures/tls/fabricca/certs/client/client_fabric_client.pem
+       keyfile: $GOPATH/src/github.com/uhuchain/uhuchain-api/test/fixtures/tls/fabricca/certs/client/client_fabric_client-key.pem
+       certfile: $GOPATH/src/github.com/uhuchain/uhuchain-api/test/fixtures/tls/fabricca/certs/client/client_fabric_client.pem
 
     # Fabric-CA supports dynamic user enrollment via REST APIs. A "root" user, a.k.a registrar, is
     # needed to enroll and invoke new users.
@@ -326,10 +353,10 @@ certificateAuthorities:
     httpOptions:
       verify: true
     tlsCACerts:
-      path: $GOPATH/src/github.com/uhuchain/uhu-hlf-client/test/fixtures/tls/fabricca/certs/ca_root.pem
+      path: $GOPATH/src/github.com/uhuchain/uhuchain-api/test/fixtures/tls/fabricca/certs/ca_root.pem
       client:
-       keyfile: $GOPATH/src/github.com/uhuchain/uhu-hlf-client/test/fixtures/tls/fabricca/certs/client/client_fabric_client-key.pem
-       certfile: $GOPATH/src/github.com/uhuchain/uhu-hlf-client/test/fixtures/tls/fabricca/certs/client/client_fabric_client.pem
+       keyfile: $GOPATH/src/github.com/uhuchain/uhuchain-api/test/fixtures/tls/fabricca/certs/client/client_fabric_client-key.pem
+       certfile: $GOPATH/src/github.com/uhuchain/uhuchain-api/test/fixtures/tls/fabricca/certs/client/client_fabric_client.pem
     registrar:
       enrollId: admin
       enrollSecret: adminpw
@@ -340,10 +367,10 @@ certificateAuthorities:
     httpOptions:
       verify: true
     tlsCACerts:
-      path: $GOPATH/src/github.com/uhuchain/uhu-hlf-client/test/fixtures/tls/fabricca/certs/ca_root.pem
+      path: $GOPATH/src/github.com/uhuchain/uhuchain-api/test/fixtures/tls/fabricca/certs/ca_root.pem
       client:
-       keyfile: $GOPATH/src/github.com/uhuchain/uhu-hlf-client/test/fixtures/tls/fabricca/certs/client/client_fabric_client-key.pem
-       certfile: $GOPATH/src/github.com/uhuchain/uhu-hlf-client/test/fixtures/tls/fabricca/certs/client/client_fabric_client.pem
+       keyfile: $GOPATH/src/github.com/uhuchain/uhuchain-api/test/fixtures/tls/fabricca/certs/client/client_fabric_client-key.pem
+       certfile: $GOPATH/src/github.com/uhuchain/uhuchain-api/test/fixtures/tls/fabricca/certs/client/client_fabric_client.pem
     registrar:
       enrollId: admin
       enrollSecret: adminpw
