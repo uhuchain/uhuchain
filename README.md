@@ -6,6 +6,8 @@ The uhuchain api server offers a RESTful API to interact with the uhuchain ledge
 
 Use the `make` file to install all required dependencies.
 
+Note: Run the `make` command always from the root of the project.
+
 ```
 make depend-install
 ```
@@ -14,8 +16,16 @@ make depend-install
 
 The repo includes a hyperledger test network consisting of three parties and an ordering service.
 
-Running `make integration-test` will start the test network and an `uhuchain-server` container exposing port `3333` so you can access the API through
- `curl 'http://localhost:3333/v1/status'`
+Running `make integration-test` will 
+* start the uhuchain test network 
+* create an `uhuchain-server` container exposing port 3333
+* run the integration tests in `test/integration`
+* compile and install the `uhuchain-server` binary
+* start the `uhuchain-server` on port 3333
+
+You can access the API through `http://localhost:3333/v1/status`
+
+Example: `curl 'http://localhost:3333/v1/status'`
 
 ## Development
 
