@@ -108,11 +108,11 @@ prepare-network:
 
 exec-integration-test: prepare-network
 	@echo "=========== Executing integration tests ==========="
-	@cd ./test/integration && $(GO_CMD) test
+	@cd ./test/integration && $(GO_CMD) test -v
 
 integration-test: clean depend populate
 	@echo "=========== Starting uhuchain test network ==========="
-	@cd ./test/uhuchain-network-dev && $(DOCKER_COMPOSE_CMD) -f docker-compose.yaml up
+	@cd ./test/uhuchain-network-dev && $(DOCKER_COMPOSE_CMD) -f docker-compose.yaml up -d && docker logs -f uhuchain-server
 
 channel-config-gen:
 	@echo "Generating test channel configuration transactions and blocks ..."

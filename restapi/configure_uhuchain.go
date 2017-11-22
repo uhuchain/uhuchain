@@ -4,6 +4,7 @@ package restapi
 
 import (
 	"crypto/tls"
+	"fmt"
 	"net/http"
 
 	errors "github.com/go-openapi/errors"
@@ -11,6 +12,7 @@ import (
 	middleware "github.com/go-openapi/runtime/middleware"
 	graceful "github.com/tylerb/graceful"
 
+	ledger "github.com/uhuchain/uhuchain-api/ledger"
 	"github.com/uhuchain/uhuchain-api/models"
 	"github.com/uhuchain/uhuchain-api/restapi/operations"
 	"github.com/uhuchain/uhuchain-api/restapi/operations/car"
@@ -53,20 +55,25 @@ func configureAPI(api *operations.UhuchainAPI) http.Handler {
 	api.CarGetCarHandler = car.GetCarHandlerFunc(func(params car.GetCarParams) middleware.Responder {
 		return middleware.NotImplemented("operation car.GetCar has not yet been implemented")
 	})
-	api.StatusGetStatusHandler = status.GetStatusHandlerFunc(func(params status.GetStatusParams) middleware.Responder {
-		res := status.NewGetStatusOK()
-		payload := models.APIResponse{
-			Code:    1000,
-			Message: "Uhuchain car ledger API is alive.",
-			Type:    "message",
-		}
-		res.WithPayload(&payload)
-		return res
-	})
+	api.StatusGetStatusHandler = status.GetStatusHandlerFunc(handleStatus)
 
 	api.ServerShutdown = func() {}
 
 	return setupGlobalMiddleware(api.Serve(setupMiddlewares))
+}
+
+func handleStatus(params status.GetStatusParams) middleware.Responder {
+	c := ledger.Client{}
+	c.Init()
+	currentBlock := c.GetCurrentBlock()
+	res := status.NewGetStatusOK()
+	payload := models.APIResponse{
+		Code:    1000,
+		Message: fmt.Sprintf("Uhuchain car ledger API is alive. Current block %s", currentBlock),
+		Type:    "message",
+	}
+	res.WithPayload(&payload)
+	return res
 }
 
 // The TLS configuration before HTTPS server starts.

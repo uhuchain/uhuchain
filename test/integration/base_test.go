@@ -37,4 +37,12 @@ func TestClient(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to init client setup: %s", err)
 	}
+
+	blockchaininfo, err := setup.Channel.QueryInfo()
+	if err != nil {
+		log.Fatalf("Failed to get current hashblock. %s", err)
+	}
+
+	t.Logf("Current hash %s", string(blockchaininfo.CurrentBlockHash))
+
 }

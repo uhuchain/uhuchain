@@ -1,10 +1,10 @@
-[36m2017-11-22 12:43:50.972 UTC [msp] GetLocalMSP -> DEBU 001[0m Returning existing local MSP
-[36m2017-11-22 12:43:50.972 UTC [msp] GetDefaultSigningIdentity -> DEBU 002[0m Obtaining default signing identity
-2017-11-22 12:43:50.987 UTC [chaincodeCmd] checkChaincodeCmdParams -> INFO 003[0m Using default escc
-2017-11-22 12:43:50.990 UTC [chaincodeCmd] checkChaincodeCmdParams -> INFO 004[0m Using default vscc
-[36m2017-11-22 12:43:50.996 UTC [chaincodeCmd] getChaincodeSpec -> DEBU 005[0m java chaincode disabled
-[36m2017-11-22 12:43:50.998 UTC [msp/identity] Sign -> DEBU 006[0m Sign: plaintext: 0ACE070A6808031A0C0886E2D5D00510...424D53500A04657363630A0476736363 
-[36m2017-11-22 12:43:50.998 UTC [msp/identity] Sign -> DEBU 007[0m Sign: digest: C614D5E1A43A80CE7866FE40FA62F0208FB5EA5F91EF36BAFC17DD16E2BB5580 
-[36m2017-11-22 12:43:52.176 UTC [msp/identity] Sign -> DEBU 008[0m Sign: plaintext: 0ACE070A6808031A0C0886E2D5D00510...BBBDA9468977E2C5911267D5F3B951BF 
-[36m2017-11-22 12:43:52.177 UTC [msp/identity] Sign -> DEBU 009[0m Sign: digest: FF8376226C6A769AD0CA77967C7C176ECEC86539B740C9318FC23E3DAA59B422 
-2017-11-22 12:43:52.195 UTC [main] main -> INFO 00a[0m Exiting.....
+[36m2017-11-22 16:58:39.790 UTC [msp] GetLocalMSP -> DEBU 001[0m Returning existing local MSP
+[36m2017-11-22 16:58:39.791 UTC [msp] GetDefaultSigningIdentity -> DEBU 002[0m Obtaining default signing identity
+2017-11-22 16:58:39.815 UTC [chaincodeCmd] checkChaincodeCmdParams -> INFO 003[0m Using default escc
+2017-11-22 16:58:39.816 UTC [chaincodeCmd] checkChaincodeCmdParams -> INFO 004[0m Using default vscc
+[36m2017-11-22 16:58:39.818 UTC [chaincodeCmd] getChaincodeSpec -> DEBU 005[0m java chaincode disabled
+[36m2017-11-22 16:58:39.820 UTC [msp/identity] Sign -> DEBU 006[0m Sign: plaintext: 0ACE070A6808031A0C08BFD9D6D00510...424D53500A04657363630A0476736363 
+[36m2017-11-22 16:58:39.820 UTC [msp/identity] Sign -> DEBU 007[0m Sign: digest: DC9E205A8A42C338829BD42A1D979B2BDE46BF9C3412D28841027F0967386595 
+[36m2017-11-22 16:58:41.170 UTC [msp/identity] Sign -> DEBU 008[0m Sign: plaintext: 0ACE070A6808031A0C08BFD9D6D00510...3184DCFB61367490B9EA455ED1134456 
+[36m2017-11-22 16:58:41.170 UTC [msp/identity] Sign -> DEBU 009[0m Sign: digest: 9EDA8020D86C1CFFE65C81A8BEB0B3417A4F40F7C7AA5C1E23CF976DAFD3B762 
+2017-11-22 16:58:41.185 UTC [main] main -> INFO 00a[0m Exiting.....
