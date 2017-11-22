@@ -147,7 +147,7 @@ install-server:
 
 test-and-run-server: exec-integration-test install-server
 	@echo "=========== Execute Uhuchain server ==========="
-	uhuchain-server --scheme=http --port=3333
+	uhuchain-server --scheme=http --host=0.0.0.0 --port=3333 
 
 clean:
 	$(GO_CMD) clean

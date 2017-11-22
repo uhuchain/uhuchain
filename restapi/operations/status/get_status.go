@@ -9,7 +9,6 @@ import (
 	"net/http"
 
 	middleware "github.com/go-openapi/runtime/middleware"
-	"github.com/uhuchain/uhuchain-api/models"
 )
 
 // GetStatusHandlerFunc turns a function with the right signature into a get status handler
@@ -17,14 +16,7 @@ type GetStatusHandlerFunc func(GetStatusParams) middleware.Responder
 
 // Handle executing the request and returning a response
 func (fn GetStatusHandlerFunc) Handle(params GetStatusParams) middleware.Responder {
-	res := NewGetStatusOK()
-	payload := models.APIResponse{
-		Code:    1000,
-		Message: "Uhuchain car ledger API is alive.",
-		Type:    "message",
-	}
-	res.WithPayload(&payload)
-	return res
+	return fn(params)
 }
 
 // GetStatusHandler interface for that can handle valid get status params

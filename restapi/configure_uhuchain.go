@@ -11,6 +11,7 @@ import (
 	middleware "github.com/go-openapi/runtime/middleware"
 	graceful "github.com/tylerb/graceful"
 
+	"github.com/uhuchain/uhuchain-api/models"
 	"github.com/uhuchain/uhuchain-api/restapi/operations"
 	"github.com/uhuchain/uhuchain-api/restapi/operations/car"
 	"github.com/uhuchain/uhuchain-api/restapi/operations/claim"
@@ -53,7 +54,14 @@ func configureAPI(api *operations.UhuchainAPI) http.Handler {
 		return middleware.NotImplemented("operation car.GetCar has not yet been implemented")
 	})
 	api.StatusGetStatusHandler = status.GetStatusHandlerFunc(func(params status.GetStatusParams) middleware.Responder {
-		return middleware.NotImplemented("operation status.GetStatus has not yet been implemented")
+		res := status.NewGetStatusOK()
+		payload := models.APIResponse{
+			Code:    1000,
+			Message: "Uhuchain car ledger API is alive.",
+			Type:    "message",
+		}
+		res.WithPayload(&payload)
+		return res
 	})
 
 	api.ServerShutdown = func() {}

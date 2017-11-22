@@ -21,14 +21,14 @@ func init() {
 	log.SetOutput(os.Stdout)
 	log.Println("Initialize uhuchain ledger client ")
 	setup = ledger.BaseSetupImpl{
-		ConfigFile:      "../client-config/config.yaml",
-		ChannelID:       "car-ledger",
-		OrgID:           "InsuranceA",
-		OrdererOrgID:    "UhuchainOrderer",
-		ChannelConfig:   "../uhuchain-network-dev/channel-artifacts/channel.tx",
+		ConfigFile:      os.Getenv("UHU_CONFIG"),
+		ChannelID:       os.Getenv("UHU_CHANNELNAME"),
+		OrgID:           os.Getenv("UHU_ORG"),
+		OrdererOrgID:    os.Getenv("UHU_ORDERER"),
+		ChannelConfig:   os.Getenv("UHU_CHANNELCONFIG"),
 		ConnectEventHub: true,
-		UserID:          "User1",
-		AdminUserID:     "Admin",
+		UserID:          os.Getenv("UHU_USERID"),
+		AdminUserID:     os.Getenv("UHU_ADMINID"),
 	}
 }
 

@@ -231,6 +231,13 @@ services:
       - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insurancea.uhuchain.com/peers/peer0.insurancea.uhuchain.com/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insurancea.uhuchain.com/peers/peer0.insurancea.uhuchain.com/tls/ca.crt
       - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insurancea.uhuchain.com/users/Admin@insurancea.uhuchain.com/msp
+      - UHU_CONFIG=/opt/gopath/src/github.com/uhuchain/uhuchain-api/test/client-config/config.yaml
+      - UHU_CHANNELNAME=car-ledger
+      - UHU_ORG=InsuranceA
+      - UHU_ORDERER=UhuchainOrderer
+      - UHU_CHANNELCONFIG=/opt/gopath/src/github.com/uhuchain/uhuchain-api/test/uhuchain-network-dev/channel-artifacts/channel.tx
+      - UHU_USERID=User1
+      - UHU_ADMINID=Admin
     working_dir: /opt/gopath/src/github.com/uhuchain/uhuchain-api
     # command: /bin/bash -c './scripts/script.sh'
     command: make test-and-run-server
