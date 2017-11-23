@@ -112,7 +112,9 @@ exec-integration-test: prepare-network
 
 integration-test: clean depend populate
 	@echo "=========== Starting uhuchain test network ==========="
-	@cd ./test/uhuchain-network-dev && $(DOCKER_COMPOSE_CMD) -f docker-compose.yaml up -d && docker logs -f uhuchain-server
+	@cd ./test/uhuchain-network-dev && $(DOCKER_COMPOSE_CMD) -f docker-compose.yaml up -d 
+	@docker exec -it uhuchain-server bash -c 'make test-and-run-server'
+	@docker logs -f uhuchain-server
 
 channel-config-gen:
 	@echo "Generating test channel configuration transactions and blocks ..."
