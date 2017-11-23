@@ -10,18 +10,13 @@ Make sure you got the platform-specific binaries installed just as descibed ["he
 
 ## Layout
 
-The network should be used by two (famous) organizations - Cyberdyne Cooperation and Umbrella Cooperation.
+The network has three participants:
+* InsuranceA
+* InsuranceB
+* InsuranceC
 
-- Zookeeper 1
-- Zookeeper 2
-- Zookeeper 3
-- Kafka 1
-- Kafka 2
-- Kafka 3
-- Kafka 4
-- CA Insurance A
-- CA Insurance B
-- CA Insurance C
+These three participants als form an OrderService, where each member provides one order node.
+
 - Orderer
     - orderer.insurancea.uhuchain.com
     - orderer.insuranceb.uhuchain.com
@@ -96,38 +91,42 @@ Create anchorpeer for the second organization (Insurance C here)
 `../bin/configtxgen -profile ThreeOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/InsuranceCMSPanchors.tx -channelID $CHANNEL_NAME -asOrg InsuranceC`
 
 ## Setup docker compose
-The file `docker-compose-senexum.yaml` contains the definitions for all containerized components for the blockchain network. Enviroment settings and mounted volumes need changed to be changed to match the files (certificates and keys) and configurations created in the previous steps. 
+The file `docker-compose.yaml` contains the definitions for all containerized components for the blockchain network. Enviroment settings and mounted volumes need changed to be changed to match the files (certificates and keys) and configurations created in the previous steps. 
 
 
 ### Bring up the network
-Before bringing up the network, make sure that in the `peer_base.yaml` the parameter `CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=<network>` matches the network name defined in `docker-compose-senexum.yaml` in the `networks` section. Note that docker compose prefixes the network name. To check for network names use `docker network ls` while the composition is running.
+Before bringing up the network, make sure that in the `peer_base.yaml` the parameter `CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=<network>` matches the network name defined in `docker-compose.yaml` in the `networks` section. Note that docker compose prefixes the network name. To check for network names use `docker network ls` while the composition is running.
 
 Example here: `CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=uhuchainnetwork_uhuchain`
 
 Start the network using `docker-compose` command.
 
-`CHANNEL_NAME=$CHANNEL_NAME TIMEOUT=1000 docker-compose -f docker-compose-full.yaml up -d`
+`docker-compose -f docker-compose.yaml up -d`
 
-Bring down the network using `docker-compose -f docker-compose-full.yaml down`.
+Bring down the network using `docker-compose -f docker-compose.yaml down`.
 
 Use `docker rm $(docker ps -a -q)` to remove all containers including the ones running the chaincode.
 
 ## Running the script
 
-For testing purposes, the docker compose file also contains an addition container `cli` with includes several tools to interact with the network from the console.
+For testing purposes, the docker compose file also contains an addition container `uhuchain-server` with includes several tools to interact with the network from the console.
 
-It also includes an end-2-end test script from the `byfn` tutorial.
+It also inludes a `prepare.sh` script the prepares the network for the actual usage through the uhuchain-server and runs the following tasks:
 
-Within the test Script we need to change domain names, path to certificates, and MSP IDs (also the one in the endorsment policy!)
+* Creation of the `car-ledger` channel
+* Installation of chaincode
+* Instantisation of chaincode
 
-Enter the CLI container uding `docker exec -it cli bash` and execute the end-2-end test with `./scripts/script.sh`.
+If the script is run with an additional `test` parameter, it will also perform some invocations of the installed chaincode.
 
-See the logs of the CLI container by using `docker logs -f cli`.
+ `prepare.sh car-ledger 2 test`
+
+See the logs of the CLI container by using `docker logs -f uhuchain-server`.
 
 ### Manual execution
 
 **Invoke**
-`peer chaincode invoke -o orderer.insurancea.uhuchain.com:7050  --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/orderer.uhuchain.com/orderers/orderer.insurancea.uhuchain.com/msp/tlscacerts/tlsca.orderer.uhuchain.com-cert.pem -C car-ledger -n mycc -c '{"Args":["invoke","a","b","100"]}'`
+`peer chaincode invoke -o orderer.insurancea.uhuchain.com:7050  --tls true --cafile /opt/gopath/src/github.com/uhuchain/uhuchain-server/peer/crypto/ordererOrganizations/orderer.uhuchain.com/orderers/orderer.insurancea.uhuchain.com/msp/tlscacerts/tlsca.orderer.uhuchain.com-cert.pem -C car-ledger -n mycc -c '{"Args":["invoke","a","b","100"]}'`
 
 **Query**
 `peer chaincode query -C car-ledger -n mycc -c '{"Args":["query","b"]}'`

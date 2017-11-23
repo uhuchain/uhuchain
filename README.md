@@ -67,6 +67,7 @@ Application Options:
 Help Options:
   -h, --help               Show this help message
 ```
+Example: `uhuchain-server --scheme=http --host=0.0.0.0 --port=3333`
 
 ## Development
 
@@ -84,4 +85,8 @@ except for
 * `restapi/handler/*`
 
 These files should be used for the actual implmentation of the endpoints.
+
+### docker compose setup
+
+For development and testing a docker compose network is defined under `test/uhuchain-network-dev`. Please see the `Readme.md` there for more details.
 
