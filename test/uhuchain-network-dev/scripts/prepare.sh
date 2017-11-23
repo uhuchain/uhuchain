@@ -200,71 +200,69 @@ chaincodeInvoke () {
 	echo
 }
 
-echo
-echo "================== Preparing Uhuchain network  ==================== "
-echo
-## Create channel
-echo "Creating channel..."
-createChannel
 
-## Join all the peers to the channel
-echo "Having all peers join the channel..."
-joinChannel
 
-## Set the anchor peers for each org in the channel
-echo "Updating anchor peers for insurancea..."
-updateAnchorPeers 0
-echo "Updating anchor peers for insuranceb..."
-updateAnchorPeers 2
-echo "Updating anchor peers for insurancec..."
-updateAnchorPeers 4
+if ! [ "$RUNTEST" == "test" ]; then
+		echo
+		echo "================== Preparing Uhuchain network  ==================== "
+		echo
+		## Create channel
+		echo "Creating channel..."
+		createChannel
 
-## Install chaincode on Peer0/insurancea and Peer2/insuranceb
-echo "Installing chaincode on insurancea/peer0..."
-installChaincode 0
-echo "Installing chaincode on insurancea/peer1..."
-installChaincode 1
-echo "Installing chaincode on insuranceb/peer0..."
-installChaincode 2
-echo "Installing chaincode on insuranceb/peer1..."
-installChaincode 3
-echo "Installing chaincode on insurancec/peer0..."
-installChaincode 4
-echo "Installing chaincode on insurancec/peer1..."
-installChaincode 5
+		## Join all the peers to the channel
+		echo "Having all peers join the channel..."
+		joinChannel
 
-#Instantiate chaincode on Peer0/insurancea
-echo "Instantiating chaincode on insurancea/peer0..."
-instantiateChaincode 0
+		## Set the anchor peers for each org in the channel
+		echo "Updating anchor peers for insurancea..."
+		updateAnchorPeers 0
+		echo "Updating anchor peers for insuranceb..."
+		updateAnchorPeers 2
+		echo "Updating anchor peers for insurancec..."
+		updateAnchorPeers 4
 
-echo
-echo "========= All GOOD, preparation of Uhuchain network completed =========== "
-echo
+		## Install chaincode on Peer0/insurancea and Peer2/insuranceb
+		echo "Installing chaincode on insurancea/peer0..."
+		installChaincode 0
+		echo "Installing chaincode on insurancea/peer1..."
+		installChaincode 1
+		echo "Installing chaincode on insuranceb/peer0..."
+		installChaincode 2
+		echo "Installing chaincode on insuranceb/peer1..."
+		installChaincode 3
+		echo "Installing chaincode on insurancec/peer0..."
+		installChaincode 4
+		echo "Installing chaincode on insurancec/peer1..."
+		installChaincode 5
 
-if [ "$RUNTEST" == "test" ]; then
-	echo
-	echo "========= Starting Uhuchain network integration tests =========== "
-	echo
+		#Instantiate chaincode on Peer0/insurancea
+		echo "Instantiating chaincode on insurancea/peer0..."
+		instantiateChaincode 0
 
-	#Query on chaincode on Peer0/insurancea
-	echo "Querying chaincode on insurancea/peer0..."
-	chaincodeQuery 0 100
+		echo
+		echo "========= All GOOD, preparation of Uhuchain network completed =========== "
+		echo
+	else
+		echo
+		echo "========= Starting Uhuchain network integration tests =========== "
+		echo
 
-	#Invoke on chaincode on Peer0/insurancea
-	echo "Sending invoke transaction on insurancea/peer0..."
-	chaincodeInvoke 0
+		#Query on chaincode on Peer0/insurancea
+		echo "Querying chaincode on insurancea/peer0..."
+		chaincodeQuery 0 100
 
-	## Install chaincode on Peer3/insuranceb
-	echo "Installing chaincode on insuranceb/peer3..."
-	installChaincode 3
+		#Invoke on chaincode on Peer0/insurancea
+		echo "Sending invoke transaction on insurancea/peer0..."
+		chaincodeInvoke 0
 
-	#Query on chaincode on Peer3/insuranceb, check if the result is 90
-	echo "Querying chaincode on insuranceb/peer3..."
-	chaincodeQuery 3 90
+		#Query on chaincode on Peer3/insuranceb, check if the result is 90
+		echo "Querying chaincode on insuranceb/peer3..."
+		chaincodeQuery 3 90
 
-	echo
-	echo "========= All GOOD, Uhuchain network integration test completed =========== "
-	echo
+		echo
+		echo "========= All GOOD, Uhuchain network integration test completed =========== "
+		echo
 fi
 
 echo

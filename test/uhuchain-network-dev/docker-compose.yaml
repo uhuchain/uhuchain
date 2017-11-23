@@ -1,4 +1,4 @@
-# Copyright IBM Corp. All Rights Reserved.
+# Copyright Uhuchain All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -239,8 +239,6 @@ services:
       - UHU_USERID=User1
       - UHU_ADMINID=Admin
     working_dir: /opt/gopath/src/github.com/uhuchain/uhuchain-api
-    # command: /bin/bash -c './scripts/script.sh'
-    # command: make test-and-run-server
     volumes:
         - /var/run/:/host/var/run/
         - ./chaincode/:/opt/gopath/src/github.com/hyperledger/fabric/examples/chaincode/go

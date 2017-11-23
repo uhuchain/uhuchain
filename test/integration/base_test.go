@@ -10,6 +10,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/hyperledger/fabric-sdk-go/api/apitxn"
 	"github.com/uhuchain/uhuchain-api/ledger"
 )
 
@@ -47,10 +48,23 @@ func TestClient(t *testing.T) {
 		log.Fatalf("QueryBlockByHash return error: %v", err)
 	}
 
-	t.Logf("Current block %s", block.String())
-
+	t.Logf("Current block: %s", block.String())
+	t.Logf("Total number of blocks: %d", blockchaininfo.GetHeight())
 	t.Logf("Peers %s", setup.Channel.Peers())
+	t.Logf("Blockchain info %s", blockchaininfo.String())
 
-	t.Logf("Primary peers %s", setup.Channel.PrimaryPeer())
+	t.Logf("Primary peers %s", setup.Channel.PrimaryPeer().URL())
 
+	testQuery("mycc", setup.ChannelClient, t)
+
+}
+
+func testQuery(ccID string, chClient apitxn.ChannelClient, t *testing.T) {
+	t.Log("Query ledger")
+	var queryArgs = [][]byte{[]byte("b")}
+	result, err := chClient.Query(apitxn.QueryRequest{ChaincodeID: ccID, Fcn: "query", Args: queryArgs})
+	if err != nil {
+		t.Fatalf("Failed to invoke example cc: %s", err)
+	}
+	t.Logf("Query result: %s", result)
 }

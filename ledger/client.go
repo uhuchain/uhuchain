@@ -9,6 +9,8 @@ package ledger
 import (
 	"log"
 	"os"
+
+	"github.com/hyperledger/fabric-sdk-go/api/apitxn"
 )
 
 // UhuClient is the global client object
@@ -35,6 +37,17 @@ func (client *Client) GetCurrentBlock() string {
 	}
 
 	return string(block.String())
+}
+
+// QueryLedger performs a basic query operation on the ledger
+func (client *Client) QueryLedger(ccID string, chClient apitxn.ChannelClient) {
+	log.Print("Query ledger")
+	var queryArgs = [][]byte{[]byte("b")}
+	result, err := client.Setup.ChannelClient.Query(apitxn.QueryRequest{ChaincodeID: ccID, Fcn: "query", Args: queryArgs})
+	if err != nil {
+		log.Fatalf("Failed to invoke example cc: %s", err)
+	}
+	log.Printf("Query result: %s", result)
 }
 
 // Init set the client
