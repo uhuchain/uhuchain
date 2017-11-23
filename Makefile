@@ -104,7 +104,7 @@ unit-tests: unit-test
 
 prepare-network:
 	@echo "=========== Preparing network ==========="
-	@cd ./test/uhuchain-network-dev/scripts && chmod +x prepare.sh && ./prepare.sh
+	@cd ./test/uhuchain-network-dev/scripts && chmod +x prepare.sh && ./prepare.sh car-ledger 1 prepare
 
 exec-integration-test: prepare-network
 	@echo "=========== Executing integration tests ==========="
