@@ -11,6 +11,9 @@ import (
 	"os"
 )
 
+// UhuClient is the global client object
+var UhuClient Client
+
 // Client wraps the hlf fabric sdk client
 type Client struct {
 	//Setup client

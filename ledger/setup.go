@@ -10,13 +10,11 @@ import (
 	"log"
 	"os"
 	"path"
-	"time"
 
 	"github.com/hyperledger/fabric-sdk-go/api/apiconfig"
 	ca "github.com/hyperledger/fabric-sdk-go/api/apifabca"
 	fab "github.com/hyperledger/fabric-sdk-go/api/apifabclient"
 	"github.com/hyperledger/fabric-sdk-go/api/apitxn"
-	chmgmt "github.com/hyperledger/fabric-sdk-go/api/apitxn/chmgmtclient"
 	pb "github.com/hyperledger/fabric-sdk-go/third_party/github.com/hyperledger/fabric/protos/peer"
 
 	deffab "github.com/hyperledger/fabric-sdk-go/def/fabapi"
@@ -105,12 +103,6 @@ func (setup *BaseSetupImpl) Initialize() error {
 	}
 	setup.Channel = channel
 
-	// Channel management client is responsible for managing channels (create/update)
-	chMgmtClient, err := sdk.NewChannelMgmtClientWithOpts(setup.AdminUserID, &deffab.ChannelMgmtClientOpts{OrgName: setup.OrdererOrgID})
-	if err != nil {
-		log.Fatalf("Failed to create new channel management client: %s", err)
-	}
-
 	chClient, err := sdk.NewChannelClient(setup.ChannelID, setup.UserID)
 	if err != nil {
 		log.Fatalf("Failed to create new channel client: %s", err)
@@ -125,26 +117,6 @@ func (setup *BaseSetupImpl) Initialize() error {
 	}
 
 	if !alreadyJoined {
-
-		// Channel config signing user (has to belong to one of channel orgs)
-		org1Admin, err := sdk.NewPreEnrolledUser(setup.OrgID, setup.AdminUserID)
-		if err != nil {
-			return errors.WithMessage(err, "failed getting Org1 admin user")
-		}
-
-		// Create channel (or update if it already exists)
-		req := chmgmt.SaveChannelRequest{ChannelID: setup.ChannelID, ChannelConfig: setup.ChannelConfig, SigningUser: org1Admin}
-
-		if err = chMgmtClient.SaveChannel(req); err != nil {
-			return errors.WithMessage(err, "SaveChannel failed")
-		}
-
-		time.Sleep(time.Second * 3)
-
-		if err = channel.Initialize(nil); err != nil {
-			return errors.WithMessage(err, "channel init failed")
-		}
-
 		if err = admin.JoinChannel(sc, setup.AdminUser, channel); err != nil {
 			return errors.WithMessage(err, "JoinChannel failed")
 		}

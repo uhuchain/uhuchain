@@ -42,7 +42,15 @@ func TestClient(t *testing.T) {
 	if err != nil {
 		log.Fatalf("Failed to get current hashblock. %s", err)
 	}
+	block, err := setup.Channel.QueryBlockByHash(blockchaininfo.CurrentBlockHash)
+	if err != nil {
+		log.Fatalf("QueryBlockByHash return error: %v", err)
+	}
 
-	t.Logf("Current hash %s", string(blockchaininfo.CurrentBlockHash))
+	t.Logf("Current block %s", block.String())
+
+	t.Logf("Peers %s", setup.Channel.Peers())
+
+	t.Logf("Primary peers %s", setup.Channel.PrimaryPeer())
 
 }
