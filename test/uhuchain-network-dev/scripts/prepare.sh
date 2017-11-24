@@ -11,10 +11,14 @@ echo "Uhuchain network end-to-end test"
 echo
 CHANNEL_NAME="$1"
 DELAY="$2"
-RUNTEST="$3"
+ACTION="$3"
+VERSION="$4"
+CHAINCODE="$5"
+# TODO Make chaincode path as parameter
 : ${CHANNEL_NAME:="car-ledger"}
 : ${TIMEOUT:="80"}
 : ${DELAY:="1"}
+: ${CHAINCODE:="mycc"}
 COUNTER=1
 MAX_RETRY=5
 ORDERER_CA=/opt/gopath/src/github.com/uhuchain/uhuchain-api/test/uhuchain-network-dev/crypto-config/ordererOrganizations/orderer.uhuchain.com/orderers/orderer.insurancea.uhuchain.com/msp/tlscacerts/tlsca.orderer.uhuchain.com-cert.pem
@@ -128,8 +132,9 @@ joinChannel () {
 
 installChaincode () {
 	PEER=$1
+	VERSION=$2
 	setGlobals $PEER
-	peer chaincode install -n mycc -v 1.0 -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02 >&log.txt
+	peer chaincode install -n $CHAINCODE -v $VERSION -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02 >&log.txt
 	res=$?
 	cat log.txt
         verifyResult $res "Chaincode installation on remote peer PEER$PEER has Failed"
@@ -139,18 +144,39 @@ installChaincode () {
 
 instantiateChaincode () {
 	PEER=$1
+	VERSION=$2
 	setGlobals $PEER
+	echo "New version is $VERSION"
 	# while 'peer chaincode' command can get the orderer endpoint from the peer (if join was successful),
 	# lets supply it directly as we know it using the "-o" option
 	if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
-		peer chaincode instantiate -o orderer.insurancea.uhuchain.com:7050 -C $CHANNEL_NAME -n mycc -v 1.0 -c '{"Args":["init","a","100","b","200"]}' -P "OR	('InsuranceAMSP.member','InsuranceBMSP.member')" >&log.txt
+		peer chaincode instantiate -o orderer.insurancea.uhuchain.com:7050 -C $CHANNEL_NAME -n $CHAINCODE -v $VERSION -c '{"Args":["init","a","100","b","200"]}' -P "OR	('InsuranceAMSP.member','InsuranceBMSP.member')" >&log.txt
 	else
-		peer chaincode instantiate -o orderer.insurancea.uhuchain.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -v 1.0 -c '{"Args":["init","a","100","b","200"]}' -P "OR	('InsuranceAMSP.member','InsuranceBMSP.member')" >&log.txt
+		peer chaincode instantiate -o orderer.insurancea.uhuchain.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n $CHAINCODE -v $VERSION -c '{"Args":["init","a","100","b","200"]}' -P "OR	('InsuranceAMSP.member','InsuranceBMSP.member')" >&log.txt
 	fi
 	res=$?
 	cat log.txt
 	verifyResult $res "Chaincode instantiation on PEER$PEER on channel '$CHANNEL_NAME' failed"
 	echo "===================== Chaincode Instantiation on PEER$PEER on channel '$CHANNEL_NAME' is successful ===================== "
+	echo
+}
+
+upgradeChaincode () {
+	PEER=$1
+	VERSION=$2
+	setGlobals $PEER
+	echo "New version is $VERSION"
+	# while 'peer chaincode' command can get the orderer endpoint from the peer (if join was successful),
+	# lets supply it directly as we know it using the "-o" option
+	if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
+		peer chaincode upgrade -o orderer.insurancea.uhuchain.com:7050 -C $CHANNEL_NAME -n $CHAINCODE -v $VERSION -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02 -c '{"Args":["init","a","100","b","200"]}' -P "OR	('InsuranceAMSP.member','InsuranceBMSP.member')" >&log.txt
+	else
+		peer chaincode upgrade -o orderer.insurancea.uhuchain.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n $CHAINCODE -v $VERSION -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02 -c '{"Args":["init","a","100","b","200"]}' -P "OR	('InsuranceAMSP.member','InsuranceBMSP.member')" >&log.txt
+	fi
+	res=$?
+	cat log.txt
+	verifyResult $res "Chaincode upgrade on PEER$PEER on channel '$CHANNEL_NAME' failed"
+	echo "===================== Chaincode upgrade on PEER$PEER on channel '$CHANNEL_NAME' is successful ===================== "
 	echo
 }
 
@@ -202,69 +228,76 @@ chaincodeInvoke () {
 
 
 
-if ! [ "$RUNTEST" == "test" ]; then
-		echo
-		echo "================== Preparing Uhuchain network  ==================== "
-		echo
-		## Create channel
-		echo "Creating channel..."
-		createChannel
+if [ "$ACTION" == "prepare" ]; then
+	echo
+	echo "================== Preparing Uhuchain network  ==================== "
+	echo
+	## Create channel
+	echo "Creating channel..."
+	createChannel
 
-		## Join all the peers to the channel
-		echo "Having all peers join the channel..."
-		joinChannel
+	## Join all the peers to the channel
+	echo "Having all peers join the channel..."
+	joinChannel
 
-		## Set the anchor peers for each org in the channel
+	for i in 0 2 4 
+	do
 		echo "Updating anchor peers for insurancea..."
-		updateAnchorPeers 0
-		echo "Updating anchor peers for insuranceb..."
-		updateAnchorPeers 2
-		echo "Updating anchor peers for insurancec..."
-		updateAnchorPeers 4
+		updateAnchorPeers $i
+	done
 
-		## Install chaincode on Peer0/insurancea and Peer2/insuranceb
+	## Install chaincode on Peer0/insurancea and Peer2/insuranceb
+	for i in 0 1 2 3 4 5 
+	do
 		echo "Installing chaincode on insurancea/peer0..."
-		installChaincode 0
-		echo "Installing chaincode on insurancea/peer1..."
-		installChaincode 1
-		echo "Installing chaincode on insuranceb/peer0..."
-		installChaincode 2
-		echo "Installing chaincode on insuranceb/peer1..."
-		installChaincode 3
-		echo "Installing chaincode on insurancec/peer0..."
-		installChaincode 4
-		echo "Installing chaincode on insurancec/peer1..."
-		installChaincode 5
+		installChaincode $i $VERSION
+	done
 
-		#Instantiate chaincode on Peer0/insurancea
-		echo "Instantiating chaincode on insurancea/peer0..."
-		instantiateChaincode 0
+	#Instantiate chaincode on Peer0/insurancea
+	echo "Instantiating chaincode on insurancea/peer0..."
+	instantiateChaincode 0 1.0
 
-		echo
-		echo "========= All GOOD, preparation of Uhuchain network completed =========== "
-		echo
-	else
-		echo
-		echo "========= Starting Uhuchain network integration tests =========== "
-		echo
-
-		#Query on chaincode on Peer0/insurancea
-		echo "Querying chaincode on insurancea/peer0..."
-		chaincodeQuery 0 100
-
-		#Invoke on chaincode on Peer0/insurancea
-		echo "Sending invoke transaction on insurancea/peer0..."
-		chaincodeInvoke 0
-
-		#Query on chaincode on Peer3/insuranceb, check if the result is 90
-		echo "Querying chaincode on insuranceb/peer3..."
-		chaincodeQuery 3 90
-
-		echo
-		echo "========= All GOOD, Uhuchain network integration test completed =========== "
-		echo
+	echo
+	echo "========= All GOOD, preparation of Uhuchain network completed =========== "
+	echo
 fi
+if [ "$ACTION" == "test" ]; then
+	echo
+	echo "========= Starting Uhuchain network integration tests =========== "
+	echo
 
+	#Query on chaincode on Peer0/insurancea
+	echo "Querying chaincode on insurancea/peer0..."
+	chaincodeQuery 0 100
+
+	#Invoke on chaincode on Peer0/insurancea
+	echo "Sending invoke transaction on insurancea/peer0..."
+	chaincodeInvoke 0
+
+	#Query on chaincode on Peer3/insuranceb, check if the result is 90
+	echo "Querying chaincode on insuranceb/peer3..."
+	chaincodeQuery 3 90
+
+	echo
+	echo "========= All GOOD, Uhuchain network integration test completed =========== "
+	echo
+fi
+if [ "$ACTION" == "upgrade" ]; then
+	echo
+	echo "========= Starting upgrade chaincode $CHAINCODE to version $VERSION =========== "
+	echo
+
+	for i in 0 1 2 3 4 5 
+	do
+		echo "Installing chaincode $CHAINCODE version $VERSION on insurancea/peer0..."
+		installChaincode $i $VERSION
+	done
+
+
+	#Instantiate chaincode on Peer0/insurancea
+	echo "Upgrading chaincode to version $VERSION on insurancea/peer0..."
+	upgradeChaincode 0 $VERSION
+fi
 echo
 echo " _____   _   _   ____   "
 echo "| ____| | \ | | |  _ \  "
