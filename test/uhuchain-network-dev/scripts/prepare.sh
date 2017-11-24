@@ -14,6 +14,7 @@ DELAY="$2"
 ACTION="$3"
 VERSION="$4"
 CHAINCODE="$5"
+# TODO Make chaincode path as parameter
 : ${CHANNEL_NAME:="car-ledger"}
 : ${TIMEOUT:="80"}
 : ${DELAY:="1"}
@@ -144,20 +145,38 @@ installChaincode () {
 instantiateChaincode () {
 	PEER=$1
 	VERSION=$2
-	ACTION=$3
 	setGlobals $PEER
 	echo "New version is $VERSION"
 	# while 'peer chaincode' command can get the orderer endpoint from the peer (if join was successful),
 	# lets supply it directly as we know it using the "-o" option
 	if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
-		peer chaincode $ACTION -o orderer.insurancea.uhuchain.com:7050 -C $CHANNEL_NAME -n $CHAINCODE -v $VERSION -c '{"Args":["init","a","100","b","200"]}' -P "OR	('InsuranceAMSP.member','InsuranceBMSP.member')" >&log.txt
+		peer chaincode instantiate -o orderer.insurancea.uhuchain.com:7050 -C $CHANNEL_NAME -n $CHAINCODE -v $VERSION -c '{"Args":["init","a","100","b","200"]}' -P "OR	('InsuranceAMSP.member','InsuranceBMSP.member')" >&log.txt
 	else
-		peer chaincode $ACTION -o orderer.insurancea.uhuchain.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n $CHAINCODE -v $VERSION -c '{"Args":["init","a","100","b","200"]}' -P "OR	('InsuranceAMSP.member','InsuranceBMSP.member')" >&log.txt
+		peer chaincode instantiate -o orderer.insurancea.uhuchain.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n $CHAINCODE -v $VERSION -c '{"Args":["init","a","100","b","200"]}' -P "OR	('InsuranceAMSP.member','InsuranceBMSP.member')" >&log.txt
 	fi
 	res=$?
 	cat log.txt
 	verifyResult $res "Chaincode instantiation on PEER$PEER on channel '$CHANNEL_NAME' failed"
 	echo "===================== Chaincode Instantiation on PEER$PEER on channel '$CHANNEL_NAME' is successful ===================== "
+	echo
+}
+
+upgradeChaincode () {
+	PEER=$1
+	VERSION=$2
+	setGlobals $PEER
+	echo "New version is $VERSION"
+	# while 'peer chaincode' command can get the orderer endpoint from the peer (if join was successful),
+	# lets supply it directly as we know it using the "-o" option
+	if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
+		peer chaincode upgrade -o orderer.insurancea.uhuchain.com:7050 -C $CHANNEL_NAME -n $CHAINCODE -v $VERSION -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02 -c '{"Args":["init","a","100","b","200"]}' -P "OR	('InsuranceAMSP.member','InsuranceBMSP.member')" >&log.txt
+	else
+		peer chaincode upgrade -o orderer.insurancea.uhuchain.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n $CHAINCODE -v $VERSION -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02 -c '{"Args":["init","a","100","b","200"]}' -P "OR	('InsuranceAMSP.member','InsuranceBMSP.member')" >&log.txt
+	fi
+	res=$?
+	cat log.txt
+	verifyResult $res "Chaincode upgrade on PEER$PEER on channel '$CHANNEL_NAME' failed"
+	echo "===================== Chaincode upgrade on PEER$PEER on channel '$CHANNEL_NAME' is successful ===================== "
 	echo
 }
 
@@ -245,7 +264,7 @@ if [ "$ACTION" == "prepare" ]; then
 
 	#Instantiate chaincode on Peer0/insurancea
 	echo "Instantiating chaincode on insurancea/peer0..."
-	instantiateChaincode 0 1.0 instantiate
+	instantiateChaincode 0 1.0
 
 	echo
 	echo "========= All GOOD, preparation of Uhuchain network completed =========== "
@@ -291,8 +310,8 @@ if [ "$ACTION" == "upgrade" ]; then
 	installChaincode 5 $VERSION
 
 	#Instantiate chaincode on Peer0/insurancea
-	echo "Updateing chaincode to version $VERSION on insurancea/peer0..."
-	instantiateChaincode 0 $VERSION upgrade
+	echo "Upgrading chaincode to version $VERSION on insurancea/peer0..."
+	upgradeChaincode 0 $VERSION
 fi
 echo
 echo " _____   _   _   ____   "
