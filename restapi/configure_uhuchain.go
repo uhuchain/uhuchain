@@ -22,6 +22,8 @@ import (
 )
 
 // This file is safe to edit. Once it exists it will not be overwritten
+// UhuClient is the global client object
+var UhuClient ledger.Client
 
 //go:generate swagger generate server --target .. --name uhuchain-api --spec ../swagger/swagger.yaml
 
@@ -67,8 +69,9 @@ func configureAPI(api *operations.UhuchainAPI) http.Handler {
 
 func initUhuClient() {
 	log.Println("Initializing UHU blockchain client")
-	ledger.UhuClient = ledger.Client{}
-	ledger.UhuClient.Init()
+	UhuClient = ledger.Client{}
+	UhuClient.Init()
+	handler.SetLedgerClient(UhuClient)
 }
 
 // The TLS configuration before HTTPS server starts.

@@ -22,7 +22,7 @@ tags:
 - name: "claim"
   description: "Access to claims"
   externalDocs:
-    description: "Find out more about our store"
+    description: "Find out more about Uhuchain"
     url: "http://uhuchain.com"
 schemes:
 - "http"
@@ -39,7 +39,11 @@ paths:
       - "application/json"
       responses:
         200:
-          description: Status Message
+          description: "Status Message"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        500:
+          description: "Server Error"
           schema:
             $ref: "#/definitions/ApiResponse"
   /cars:
@@ -63,8 +67,12 @@ paths:
       responses:
         201:
             description: "New car created"
-        405:
-          description: "Invalid input"
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        500:
+          description: "Server Error"
           schema:
             $ref: "#/definitions/ApiResponse"
   /cars/{id}:
@@ -74,7 +82,7 @@ paths:
           name: id
           required: true
           type: integer
-          description: The car ID
+          description: "The car ID"
       tags:
       - "car"
       summary: "Get a car from uhuchain"
@@ -85,11 +93,19 @@ paths:
       
       responses:
         200:
-          description: Car with the given ID
+          description: "Car with the given ID"
           schema:
             $ref: "#/definitions/Car"
         404:
           description: "Not found"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        500:
+          description: "Server Error"
           schema:
             $ref: "#/definitions/ApiResponse"
   /cars/{id}/policies:
@@ -108,7 +124,7 @@ paths:
         name: id
         required: true
         type: integer
-        description: The car ID
+        description: "The car ID"
       - in: "body"
         name: "body"
         description: "Policy that should be added"
@@ -117,9 +133,13 @@ paths:
           $ref: "#/definitions/Policy"
       responses:
         201:
-          description: Policy was created
-        405:
-          description: "Invalid input"
+          description: "Policy was created"
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        500:
+          description: "Server Error"
           schema:
             $ref: "#/definitions/ApiResponse"
   /cars/{carId}/policies/{policyId}/claims:
@@ -138,12 +158,12 @@ paths:
         name: carId
         required: true
         type: integer
-        description: The car ID
+        description: "The car ID"
       - in: path
         name: policyId
         required: true
         type: integer
-        description: The policy ID
+        description: "The policy ID"
       - in: "body"
         name: "body"
         description: "Claim that should be added"
@@ -152,9 +172,13 @@ paths:
           $ref: "#/definitions/Claim"
       responses:
         201:
-          description: Claim was created
-        405:
-          description: "Invalid input"
+          description: "Claim was created"
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        500:
+          description: "Server Error"
           schema:
             $ref: "#/definitions/ApiResponse"
 securityDefinitions:

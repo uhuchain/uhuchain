@@ -13,9 +13,6 @@ import (
 	"github.com/hyperledger/fabric-sdk-go/api/apitxn"
 )
 
-// UhuClient is the global client object
-var UhuClient Client
-
 // Client wraps the hlf fabric sdk client
 type Client struct {
 	//Setup client
@@ -40,14 +37,16 @@ func (client *Client) GetCurrentBlock() string {
 }
 
 // QueryLedger performs a basic query operation on the ledger
-func (client *Client) QueryLedger(ccID string, chClient apitxn.ChannelClient) {
+func (client *Client) QueryLedger(ccID string, id string) ([]byte, error) {
 	log.Print("Query ledger")
-	var queryArgs = [][]byte{[]byte("b")}
+	var queryArgs = [][]byte{[]byte(id)}
 	result, err := client.Setup.ChannelClient.Query(apitxn.QueryRequest{ChaincodeID: ccID, Fcn: "query", Args: queryArgs})
 	if err != nil {
 		log.Fatalf("Failed to invoke example cc: %s", err)
+		return nil, err
 	}
 	log.Printf("Query result: %s", result)
+	return result, nil
 }
 
 // Init set the client

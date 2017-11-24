@@ -56,6 +56,49 @@ func (o *GetCarOK) WriteResponse(rw http.ResponseWriter, producer runtime.Produc
 	}
 }
 
+// GetCarBadRequestCode is the HTTP code returned for type GetCarBadRequest
+const GetCarBadRequestCode int = 400
+
+/*GetCarBadRequest Bad Request
+
+swagger:response getCarBadRequest
+*/
+type GetCarBadRequest struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.APIResponse `json:"body,omitempty"`
+}
+
+// NewGetCarBadRequest creates GetCarBadRequest with default headers values
+func NewGetCarBadRequest() *GetCarBadRequest {
+	return &GetCarBadRequest{}
+}
+
+// WithPayload adds the payload to the get car bad request response
+func (o *GetCarBadRequest) WithPayload(payload *models.APIResponse) *GetCarBadRequest {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the get car bad request response
+func (o *GetCarBadRequest) SetPayload(payload *models.APIResponse) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *GetCarBadRequest) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(400)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}
+
 // GetCarNotFoundCode is the HTTP code returned for type GetCarNotFound
 const GetCarNotFoundCode int = 404
 
@@ -91,6 +134,49 @@ func (o *GetCarNotFound) SetPayload(payload *models.APIResponse) {
 func (o *GetCarNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.WriteHeader(404)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}
+
+// GetCarInternalServerErrorCode is the HTTP code returned for type GetCarInternalServerError
+const GetCarInternalServerErrorCode int = 500
+
+/*GetCarInternalServerError Server Error
+
+swagger:response getCarInternalServerError
+*/
+type GetCarInternalServerError struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.APIResponse `json:"body,omitempty"`
+}
+
+// NewGetCarInternalServerError creates GetCarInternalServerError with default headers values
+func NewGetCarInternalServerError() *GetCarInternalServerError {
+	return &GetCarInternalServerError{}
+}
+
+// WithPayload adds the payload to the get car internal server error response
+func (o *GetCarInternalServerError) WithPayload(payload *models.APIResponse) *GetCarInternalServerError {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the get car internal server error response
+func (o *GetCarInternalServerError) SetPayload(payload *models.APIResponse) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *GetCarInternalServerError) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(500)
 	if o.Payload != nil {
 		payload := o.Payload
 		if err := producer.Produce(rw, payload); err != nil {

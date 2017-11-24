@@ -63,8 +63,14 @@ func init() {
           "201": {
             "description": "New car created"
           },
-          "405": {
-            "description": "Invalid input",
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          },
+          "500": {
+            "description": "Server Error",
             "schema": {
               "$ref": "#/definitions/ApiResponse"
             }
@@ -114,8 +120,14 @@ func init() {
           "201": {
             "description": "Claim was created"
           },
-          "405": {
-            "description": "Invalid input",
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          },
+          "500": {
+            "description": "Server Error",
             "schema": {
               "$ref": "#/definitions/ApiResponse"
             }
@@ -149,8 +161,20 @@ func init() {
               "$ref": "#/definitions/Car"
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          },
           "404": {
             "description": "Not found",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          },
+          "500": {
+            "description": "Server Error",
             "schema": {
               "$ref": "#/definitions/ApiResponse"
             }
@@ -193,8 +217,14 @@ func init() {
           "201": {
             "description": "Policy was created"
           },
-          "405": {
-            "description": "Invalid input",
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          },
+          "500": {
+            "description": "Server Error",
             "schema": {
               "$ref": "#/definitions/ApiResponse"
             }
@@ -215,6 +245,12 @@ func init() {
         "responses": {
           "200": {
             "description": "Status Message",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          },
+          "500": {
+            "description": "Server Error",
             "schema": {
               "$ref": "#/definitions/ApiResponse"
             }

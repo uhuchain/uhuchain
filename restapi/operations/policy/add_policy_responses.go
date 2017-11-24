@@ -34,14 +34,14 @@ func (o *AddPolicyCreated) WriteResponse(rw http.ResponseWriter, producer runtim
 	rw.WriteHeader(201)
 }
 
-// AddPolicyMethodNotAllowedCode is the HTTP code returned for type AddPolicyMethodNotAllowed
-const AddPolicyMethodNotAllowedCode int = 405
+// AddPolicyBadRequestCode is the HTTP code returned for type AddPolicyBadRequest
+const AddPolicyBadRequestCode int = 400
 
-/*AddPolicyMethodNotAllowed Invalid input
+/*AddPolicyBadRequest Bad Request
 
-swagger:response addPolicyMethodNotAllowed
+swagger:response addPolicyBadRequest
 */
-type AddPolicyMethodNotAllowed struct {
+type AddPolicyBadRequest struct {
 
 	/*
 	  In: Body
@@ -49,26 +49,69 @@ type AddPolicyMethodNotAllowed struct {
 	Payload *models.APIResponse `json:"body,omitempty"`
 }
 
-// NewAddPolicyMethodNotAllowed creates AddPolicyMethodNotAllowed with default headers values
-func NewAddPolicyMethodNotAllowed() *AddPolicyMethodNotAllowed {
-	return &AddPolicyMethodNotAllowed{}
+// NewAddPolicyBadRequest creates AddPolicyBadRequest with default headers values
+func NewAddPolicyBadRequest() *AddPolicyBadRequest {
+	return &AddPolicyBadRequest{}
 }
 
-// WithPayload adds the payload to the add policy method not allowed response
-func (o *AddPolicyMethodNotAllowed) WithPayload(payload *models.APIResponse) *AddPolicyMethodNotAllowed {
+// WithPayload adds the payload to the add policy bad request response
+func (o *AddPolicyBadRequest) WithPayload(payload *models.APIResponse) *AddPolicyBadRequest {
 	o.Payload = payload
 	return o
 }
 
-// SetPayload sets the payload to the add policy method not allowed response
-func (o *AddPolicyMethodNotAllowed) SetPayload(payload *models.APIResponse) {
+// SetPayload sets the payload to the add policy bad request response
+func (o *AddPolicyBadRequest) SetPayload(payload *models.APIResponse) {
 	o.Payload = payload
 }
 
 // WriteResponse to the client
-func (o *AddPolicyMethodNotAllowed) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+func (o *AddPolicyBadRequest) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
-	rw.WriteHeader(405)
+	rw.WriteHeader(400)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}
+
+// AddPolicyInternalServerErrorCode is the HTTP code returned for type AddPolicyInternalServerError
+const AddPolicyInternalServerErrorCode int = 500
+
+/*AddPolicyInternalServerError Server Error
+
+swagger:response addPolicyInternalServerError
+*/
+type AddPolicyInternalServerError struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.APIResponse `json:"body,omitempty"`
+}
+
+// NewAddPolicyInternalServerError creates AddPolicyInternalServerError with default headers values
+func NewAddPolicyInternalServerError() *AddPolicyInternalServerError {
+	return &AddPolicyInternalServerError{}
+}
+
+// WithPayload adds the payload to the add policy internal server error response
+func (o *AddPolicyInternalServerError) WithPayload(payload *models.APIResponse) *AddPolicyInternalServerError {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the add policy internal server error response
+func (o *AddPolicyInternalServerError) SetPayload(payload *models.APIResponse) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *AddPolicyInternalServerError) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(500)
 	if o.Payload != nil {
 		payload := o.Payload
 		if err := producer.Produce(rw, payload); err != nil {

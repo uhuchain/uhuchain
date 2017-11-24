@@ -55,3 +55,46 @@ func (o *GetStatusOK) WriteResponse(rw http.ResponseWriter, producer runtime.Pro
 		}
 	}
 }
+
+// GetStatusInternalServerErrorCode is the HTTP code returned for type GetStatusInternalServerError
+const GetStatusInternalServerErrorCode int = 500
+
+/*GetStatusInternalServerError Server Error
+
+swagger:response getStatusInternalServerError
+*/
+type GetStatusInternalServerError struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.APIResponse `json:"body,omitempty"`
+}
+
+// NewGetStatusInternalServerError creates GetStatusInternalServerError with default headers values
+func NewGetStatusInternalServerError() *GetStatusInternalServerError {
+	return &GetStatusInternalServerError{}
+}
+
+// WithPayload adds the payload to the get status internal server error response
+func (o *GetStatusInternalServerError) WithPayload(payload *models.APIResponse) *GetStatusInternalServerError {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the get status internal server error response
+func (o *GetStatusInternalServerError) SetPayload(payload *models.APIResponse) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *GetStatusInternalServerError) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(500)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}

@@ -34,14 +34,14 @@ func (o *AddClaimCreated) WriteResponse(rw http.ResponseWriter, producer runtime
 	rw.WriteHeader(201)
 }
 
-// AddClaimMethodNotAllowedCode is the HTTP code returned for type AddClaimMethodNotAllowed
-const AddClaimMethodNotAllowedCode int = 405
+// AddClaimBadRequestCode is the HTTP code returned for type AddClaimBadRequest
+const AddClaimBadRequestCode int = 400
 
-/*AddClaimMethodNotAllowed Invalid input
+/*AddClaimBadRequest Bad Request
 
-swagger:response addClaimMethodNotAllowed
+swagger:response addClaimBadRequest
 */
-type AddClaimMethodNotAllowed struct {
+type AddClaimBadRequest struct {
 
 	/*
 	  In: Body
@@ -49,26 +49,69 @@ type AddClaimMethodNotAllowed struct {
 	Payload *models.APIResponse `json:"body,omitempty"`
 }
 
-// NewAddClaimMethodNotAllowed creates AddClaimMethodNotAllowed with default headers values
-func NewAddClaimMethodNotAllowed() *AddClaimMethodNotAllowed {
-	return &AddClaimMethodNotAllowed{}
+// NewAddClaimBadRequest creates AddClaimBadRequest with default headers values
+func NewAddClaimBadRequest() *AddClaimBadRequest {
+	return &AddClaimBadRequest{}
 }
 
-// WithPayload adds the payload to the add claim method not allowed response
-func (o *AddClaimMethodNotAllowed) WithPayload(payload *models.APIResponse) *AddClaimMethodNotAllowed {
+// WithPayload adds the payload to the add claim bad request response
+func (o *AddClaimBadRequest) WithPayload(payload *models.APIResponse) *AddClaimBadRequest {
 	o.Payload = payload
 	return o
 }
 
-// SetPayload sets the payload to the add claim method not allowed response
-func (o *AddClaimMethodNotAllowed) SetPayload(payload *models.APIResponse) {
+// SetPayload sets the payload to the add claim bad request response
+func (o *AddClaimBadRequest) SetPayload(payload *models.APIResponse) {
 	o.Payload = payload
 }
 
 // WriteResponse to the client
-func (o *AddClaimMethodNotAllowed) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+func (o *AddClaimBadRequest) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
-	rw.WriteHeader(405)
+	rw.WriteHeader(400)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}
+
+// AddClaimInternalServerErrorCode is the HTTP code returned for type AddClaimInternalServerError
+const AddClaimInternalServerErrorCode int = 500
+
+/*AddClaimInternalServerError Server Error
+
+swagger:response addClaimInternalServerError
+*/
+type AddClaimInternalServerError struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.APIResponse `json:"body,omitempty"`
+}
+
+// NewAddClaimInternalServerError creates AddClaimInternalServerError with default headers values
+func NewAddClaimInternalServerError() *AddClaimInternalServerError {
+	return &AddClaimInternalServerError{}
+}
+
+// WithPayload adds the payload to the add claim internal server error response
+func (o *AddClaimInternalServerError) WithPayload(payload *models.APIResponse) *AddClaimInternalServerError {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the add claim internal server error response
+func (o *AddClaimInternalServerError) SetPayload(payload *models.APIResponse) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *AddClaimInternalServerError) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(500)
 	if o.Payload != nil {
 		payload := o.Payload
 		if err := producer.Produce(rw, payload); err != nil {

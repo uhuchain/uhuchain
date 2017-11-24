@@ -34,14 +34,14 @@ func (o *AddCarCreated) WriteResponse(rw http.ResponseWriter, producer runtime.P
 	rw.WriteHeader(201)
 }
 
-// AddCarMethodNotAllowedCode is the HTTP code returned for type AddCarMethodNotAllowed
-const AddCarMethodNotAllowedCode int = 405
+// AddCarBadRequestCode is the HTTP code returned for type AddCarBadRequest
+const AddCarBadRequestCode int = 400
 
-/*AddCarMethodNotAllowed Invalid input
+/*AddCarBadRequest Bad Request
 
-swagger:response addCarMethodNotAllowed
+swagger:response addCarBadRequest
 */
-type AddCarMethodNotAllowed struct {
+type AddCarBadRequest struct {
 
 	/*
 	  In: Body
@@ -49,26 +49,69 @@ type AddCarMethodNotAllowed struct {
 	Payload *models.APIResponse `json:"body,omitempty"`
 }
 
-// NewAddCarMethodNotAllowed creates AddCarMethodNotAllowed with default headers values
-func NewAddCarMethodNotAllowed() *AddCarMethodNotAllowed {
-	return &AddCarMethodNotAllowed{}
+// NewAddCarBadRequest creates AddCarBadRequest with default headers values
+func NewAddCarBadRequest() *AddCarBadRequest {
+	return &AddCarBadRequest{}
 }
 
-// WithPayload adds the payload to the add car method not allowed response
-func (o *AddCarMethodNotAllowed) WithPayload(payload *models.APIResponse) *AddCarMethodNotAllowed {
+// WithPayload adds the payload to the add car bad request response
+func (o *AddCarBadRequest) WithPayload(payload *models.APIResponse) *AddCarBadRequest {
 	o.Payload = payload
 	return o
 }
 
-// SetPayload sets the payload to the add car method not allowed response
-func (o *AddCarMethodNotAllowed) SetPayload(payload *models.APIResponse) {
+// SetPayload sets the payload to the add car bad request response
+func (o *AddCarBadRequest) SetPayload(payload *models.APIResponse) {
 	o.Payload = payload
 }
 
 // WriteResponse to the client
-func (o *AddCarMethodNotAllowed) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+func (o *AddCarBadRequest) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
-	rw.WriteHeader(405)
+	rw.WriteHeader(400)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}
+
+// AddCarInternalServerErrorCode is the HTTP code returned for type AddCarInternalServerError
+const AddCarInternalServerErrorCode int = 500
+
+/*AddCarInternalServerError Server Error
+
+swagger:response addCarInternalServerError
+*/
+type AddCarInternalServerError struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.APIResponse `json:"body,omitempty"`
+}
+
+// NewAddCarInternalServerError creates AddCarInternalServerError with default headers values
+func NewAddCarInternalServerError() *AddCarInternalServerError {
+	return &AddCarInternalServerError{}
+}
+
+// WithPayload adds the payload to the add car internal server error response
+func (o *AddCarInternalServerError) WithPayload(payload *models.APIResponse) *AddCarInternalServerError {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the add car internal server error response
+func (o *AddCarInternalServerError) SetPayload(payload *models.APIResponse) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *AddCarInternalServerError) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(500)
 	if o.Payload != nil {
 		payload := o.Payload
 		if err := producer.Produce(rw, payload); err != nil {
