@@ -240,27 +240,18 @@ if [ "$ACTION" == "prepare" ]; then
 	echo "Having all peers join the channel..."
 	joinChannel
 
-	## Set the anchor peers for each org in the channel
-	echo "Updating anchor peers for insurancea..."
-	updateAnchorPeers 0
-	echo "Updating anchor peers for insuranceb..."
-	updateAnchorPeers 2
-	echo "Updating anchor peers for insurancec..."
-	updateAnchorPeers 4
+	for i in 0 2 4 
+	do
+		echo "Updating anchor peers for insurancea..."
+		updateAnchorPeers $i
+	done
 
 	## Install chaincode on Peer0/insurancea and Peer2/insuranceb
-	echo "Installing chaincode on insurancea/peer0..."
-	installChaincode 0 1.0
-	echo "Installing chaincode on insurancea/peer1..."
-	installChaincode 1 1.0
-	echo "Installing chaincode on insuranceb/peer0..."
-	installChaincode 2 1.0
-	echo "Installing chaincode on insuranceb/peer1..."
-	installChaincode 3 1.0
-	echo "Installing chaincode on insurancec/peer0..."
-	installChaincode 4 1.0
-	echo "Installing chaincode on insurancec/peer1..."
-	installChaincode 5 1.0
+	for i in 0 1 2 3 4 5 
+	do
+		echo "Installing chaincode on insurancea/peer0..."
+		installChaincode $i $VERSION
+	done
 
 	#Instantiate chaincode on Peer0/insurancea
 	echo "Instantiating chaincode on insurancea/peer0..."
@@ -295,19 +286,13 @@ if [ "$ACTION" == "upgrade" ]; then
 	echo
 	echo "========= Starting upgrade chaincode $CHAINCODE to version $VERSION =========== "
 	echo
-	## Install chaincode on Peer0/insurancea and Peer2/insuranceb
-	echo "Installing chaincode $CHAINCODE version $VERSION on insurancea/peer0..."
-	installChaincode 0 $VERSION
-	echo "Installing chaincode $CHAINCODE version $VERSION on insurancea/peer1..."
-	installChaincode 1 $VERSION
-	echo "Installing chaincode $CHAINCODE version $VERSION on insuranceb/peer0..."
-	installChaincode 2 $VERSION
-	echo "Installing chaincode $CHAINCODE version $VERSION on insuranceb/peer1..."
-	installChaincode 3 $VERSION
-	echo "Installing chaincode $CHAINCODE version $VERSION on insurancec/peer0..."
-	installChaincode 4 $VERSION
-	echo "Installing chaincode $CHAINCODE version $VERSION on insurancec/peer1..."
-	installChaincode 5 $VERSION
+
+	for i in 0 1 2 3 4 5 
+	do
+		echo "Installing chaincode $CHAINCODE version $VERSION on insurancea/peer0..."
+		installChaincode $i $VERSION
+	done
+
 
 	#Instantiate chaincode on Peer0/insurancea
 	echo "Upgrading chaincode to version $VERSION on insurancea/peer0..."
