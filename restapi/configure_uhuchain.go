@@ -48,18 +48,16 @@ func configureAPI(api *operations.UhuchainAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
-	api.CarAddCarHandler = car.AddCarHandlerFunc(func(params car.AddCarParams) middleware.Responder {
-		return middleware.NotImplemented("operation car.AddCar has not yet been implemented")
-	})
+	api.CarAddCarHandler = car.AddCarHandlerFunc(handler.HandleAddCar)
+
 	api.ClaimAddClaimHandler = claim.AddClaimHandlerFunc(func(params claim.AddClaimParams) middleware.Responder {
 		return middleware.NotImplemented("operation claim.AddClaim has not yet been implemented")
 	})
 	api.PolicyAddPolicyHandler = policy.AddPolicyHandlerFunc(func(params policy.AddPolicyParams) middleware.Responder {
 		return middleware.NotImplemented("operation policy.AddPolicy has not yet been implemented")
 	})
-	api.CarGetCarHandler = car.GetCarHandlerFunc(func(params car.GetCarParams) middleware.Responder {
-		return middleware.NotImplemented("operation car.GetCar has not yet been implemented")
-	})
+
+	api.CarGetCarHandler = car.GetCarHandlerFunc(handler.HandleGetCar)
 	api.StatusGetStatusHandler = status.GetStatusHandlerFunc(handler.HandleStatus)
 
 	api.ServerShutdown = func() {}

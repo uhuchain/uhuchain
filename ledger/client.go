@@ -9,14 +9,37 @@ package ledger
 import (
 	"log"
 	"os"
+	"time"
 
 	"github.com/hyperledger/fabric-sdk-go/api/apitxn"
+	pb "github.com/hyperledger/fabric-sdk-go/third_party/github.com/hyperledger/fabric/protos/peer"
 )
 
 // Client wraps the hlf fabric sdk client
 type Client struct {
 	//Setup client
 	Setup BaseSetupImpl
+}
+
+type TestTxFilter struct {
+	err          error
+	errResponses error
+}
+
+func (tf *TestTxFilter) ProcessTxProposalResponse(txProposalResponse []*apitxn.TransactionProposalResponse) ([]*apitxn.TransactionProposalResponse, error) {
+	if tf.err != nil {
+		return nil, tf.err
+	}
+
+	var newResponses []*apitxn.TransactionProposalResponse
+
+	if tf.errResponses != nil {
+		// 404 will cause transaction commit error
+		txProposalResponse[0].ProposalResponse.Response.Status = 404
+	}
+
+	newResponses = append(newResponses, txProposalResponse[0])
+	return newResponses, nil
 }
 
 // GetCurrentBlock returns the current block of the channel
@@ -47,6 +70,37 @@ func (client *Client) QueryLedger(ccID string, id string) ([]byte, error) {
 	}
 	log.Printf("Query result: %s", result)
 	return result, nil
+}
+
+// WriteToLedger writes a
+func (client *Client) WriteToLedger(ccID string, carID string, value []byte) error {
+	txNotifier := make(chan apitxn.ExecuteTxResponse)
+	txFilter := &TestTxFilter{}
+	txOpts := apitxn.ExecuteTxOpts{Notifier: txNotifier, TxFilter: txFilter}
+
+	var newCarArg = [][]byte{[]byte("write"), []byte(carID), value}
+
+	_, err := client.Setup.ChannelClient.ExecuteTxWithOpts(apitxn.ExecuteTxRequest{ChaincodeID: ccID, Fcn: "invoke", Args: newCarArg}, txOpts)
+	if err != nil {
+		log.Fatalf("Failed to move funds: %s", err)
+		return err
+	}
+
+	select {
+	case response := <-txNotifier:
+		if response.Error != nil {
+			log.Fatalf("ExecuteTx returned error: %s", response.Error)
+			return err
+		}
+		if response.TxValidationCode != pb.TxValidationCode_VALID {
+			log.Fatalf("Expecting TxValidationCode to be TxValidationCode_VALID but received: %s", response.TxValidationCode)
+			return err
+		}
+	case <-time.After(time.Second * 20):
+		log.Fatalf("ExecuteTx timed out")
+		return err
+	}
+	return nil
 }
 
 // Init set the client
