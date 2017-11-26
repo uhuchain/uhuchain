@@ -72,15 +72,15 @@ func (client *Client) QueryLedger(ccID string, id string) ([]byte, error) {
 	return result, nil
 }
 
-// WriteToLedger writes a
+// WriteToLedger writes an object onto the ledger
 func (client *Client) WriteToLedger(ccID string, carID string, value []byte) error {
 	txNotifier := make(chan apitxn.ExecuteTxResponse)
 	txFilter := &TestTxFilter{}
 	txOpts := apitxn.ExecuteTxOpts{Notifier: txNotifier, TxFilter: txFilter}
 
-	var newCarArg = [][]byte{[]byte("write"), []byte(carID), value}
+	var newCarArg = [][]byte{[]byte(carID), value}
 
-	_, err := client.Setup.ChannelClient.ExecuteTxWithOpts(apitxn.ExecuteTxRequest{ChaincodeID: ccID, Fcn: "invoke", Args: newCarArg}, txOpts)
+	_, err := client.Setup.ChannelClient.ExecuteTxWithOpts(apitxn.ExecuteTxRequest{ChaincodeID: ccID, Fcn: "write", Args: newCarArg}, txOpts)
 	if err != nil {
 		log.Fatalf("Failed to move funds: %s", err)
 		return err
