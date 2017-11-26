@@ -71,7 +71,7 @@ Example: `uhuchain-server --scheme=http --host=0.0.0.0 --port=3333`
 
 ## Development
 
-The api endpoints and models are generated based on the swagger 2.0 spec using the ["go-swagger"](https://goswagger.io) tool. After installing `go-swagger` run `swagger generate server -f ~$GOPATH/src/github.com/uhuchain/uhuchain-api/swagger/swagger.yaml -A uhuchain-api` from the root of this repository.
+The api endpoints and models are generated based on the swagger 2.0 spec using the ["go-swagger"](https://goswagger.io) tool. After installing `go-swagger` run `swagger generate server -f $GOPATH/src/github.com/uhuchain/uhuchain-api/swagger/swagger.yaml -A uhuchain-api` from the root of this repository.
 
 The generator will replace **all** files in the following directories:
 
@@ -85,6 +85,18 @@ except for
 * `restapi/handler/*`
 
 These files should be used for the actual implmentation of the endpoints.
+
+## Testing
+
+For development and testing, login to the `uhuchain-server` container with `docker exec -it uhuchain-server bash`.
+
+Run the integration test manually with `go test -v ./test/integration/`.
+
+### Updating chaincode
+
+The `prepare.sh` scripts supports upgrading the chaincode to a new version by running `./test/uhuchain-network-dev/scripts/prepare.sh car-ledger 1 upgrade 1.1`. 
+
+TODO: Change the default path for the chaincode to the uhuchain chaincode. Currently the default fabric samples are used.
 
 ### docker compose setup
 
