@@ -15,10 +15,18 @@ import (
 	pb "github.com/hyperledger/fabric-sdk-go/third_party/github.com/hyperledger/fabric/protos/peer"
 )
 
-// Client wraps the hlf fabric sdk client
-type Client struct {
+// Client defines the interface for a client that interacts with the ledger
+type Client interface {
+	GetBlockchainInfo() (string, error)
+	QueryLedger(string, string) ([]byte, error)
+	WriteToLedger(string, string, []byte) error
+	Init()
+}
+
+// FabricClient wraps the hlf fabric sdk client
+type FabricClient struct {
 	//Setup client
-	Setup BaseSetupImpl
+	setup BaseSetupImpl
 }
 
 type TestTxFilter struct {
@@ -42,28 +50,23 @@ func (tf *TestTxFilter) ProcessTxProposalResponse(txProposalResponse []*apitxn.T
 	return newResponses, nil
 }
 
-// GetCurrentBlock returns the current block of the channel
-func (client *Client) GetCurrentBlock() string {
+// GetBlockchainInfo returns the current block of the channel
+func (client *FabricClient) GetBlockchainInfo() (string, error) {
 	log.Println("Getting current block")
-	blockchaininfo, err := client.Setup.Channel.QueryInfo()
+	blockchaininfo, err := client.setup.Channel.QueryInfo()
 
 	if err != nil {
-		log.Fatalf("Failed to get current hashblock. %s", err)
+		log.Fatalf("Failed to get current blcokchaininfo. %s", err)
+		return "", err
 	}
-
-	block, err := client.Setup.Channel.QueryBlockByHash(blockchaininfo.CurrentBlockHash)
-	if err != nil {
-		log.Fatalf("QueryBlockByHash return error: %v", err)
-	}
-
-	return string(block.String())
+	return blockchaininfo.String(), nil
 }
 
 // QueryLedger performs a basic query operation on the ledger
-func (client *Client) QueryLedger(ccID string, id string) ([]byte, error) {
+func (client *FabricClient) QueryLedger(ccID string, id string) ([]byte, error) {
 	log.Print("Query ledger")
 	var queryArgs = [][]byte{[]byte(id)}
-	result, err := client.Setup.ChannelClient.Query(apitxn.QueryRequest{ChaincodeID: ccID, Fcn: "query", Args: queryArgs})
+	result, err := client.setup.ChannelClient.Query(apitxn.QueryRequest{ChaincodeID: ccID, Fcn: "query", Args: queryArgs})
 	if err != nil {
 		log.Fatalf("Failed to invoke example cc: %s", err)
 		return nil, err
@@ -73,14 +76,14 @@ func (client *Client) QueryLedger(ccID string, id string) ([]byte, error) {
 }
 
 // WriteToLedger writes an object onto the ledger
-func (client *Client) WriteToLedger(ccID string, carID string, value []byte) error {
+func (client *FabricClient) WriteToLedger(ccID string, carID string, value []byte) error {
 	txNotifier := make(chan apitxn.ExecuteTxResponse)
 	txFilter := &TestTxFilter{}
 	txOpts := apitxn.ExecuteTxOpts{Notifier: txNotifier, TxFilter: txFilter}
 
 	var newCarArg = [][]byte{[]byte(carID), value}
 
-	_, err := client.Setup.ChannelClient.ExecuteTxWithOpts(apitxn.ExecuteTxRequest{ChaincodeID: ccID, Fcn: "write", Args: newCarArg}, txOpts)
+	_, err := client.setup.ChannelClient.ExecuteTxWithOpts(apitxn.ExecuteTxRequest{ChaincodeID: ccID, Fcn: "write", Args: newCarArg}, txOpts)
 	if err != nil {
 		log.Fatalf("Failed to move funds: %s", err)
 		return err
@@ -104,8 +107,8 @@ func (client *Client) WriteToLedger(ccID string, carID string, value []byte) err
 }
 
 // Init set the client
-func (client *Client) Init() {
-	client.Setup = BaseSetupImpl{
+func (client *FabricClient) Init() {
+	client.setup = BaseSetupImpl{
 		ConfigFile:      os.Getenv("UHU_CONFIG"),
 		ChannelID:       os.Getenv("UHU_CHANNELNAME"),
 		OrgID:           os.Getenv("UHU_ORG"),
@@ -115,10 +118,16 @@ func (client *Client) Init() {
 		UserID:          os.Getenv("UHU_USERID"),
 		AdminUserID:     os.Getenv("UHU_ADMINID"),
 	}
-	err := client.Setup.Initialize()
+	err := client.setup.Initialize()
 	if err != nil {
 		log.Fatalf("Failed to init client setup: %s", err)
 		os.Exit(1)
 	}
 	log.Println("Uhuchain client initilized successfully.")
+}
+
+// FabricClient wraps the hlf fabric sdk client
+type ClientMock struct {
+	//Setup client
+	Setup BaseSetupImpl
 }

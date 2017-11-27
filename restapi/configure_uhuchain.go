@@ -23,7 +23,7 @@ import (
 
 // This file is safe to edit. Once it exists it will not be overwritten
 // UhuClient is the global client object
-var UhuClient ledger.Client
+var UhuClient ledger.FabricClient
 
 //go:generate swagger generate server --target .. --name uhuchain-api --spec ../swagger/swagger.yaml
 
@@ -67,7 +67,7 @@ func configureAPI(api *operations.UhuchainAPI) http.Handler {
 
 func initUhuClient() {
 	log.Println("Initializing UHU blockchain client")
-	UhuClient = ledger.Client{}
+	UhuClient = ledger.FabricClient{}
 	UhuClient.Init()
 	handler.SetLedgerClient(UhuClient)
 }

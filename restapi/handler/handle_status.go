@@ -14,7 +14,7 @@ import (
 // HandleStatus implements the handling of the status endpoint
 func HandleStatus(params status.GetStatusParams) middleware.Responder {
 	payload := models.APIResponse{}
-	ledgerStatus, err := uhuClient.Setup.Channel.QueryInfo()
+	ledgerStatus, err := uhuClient.GetBlockchainInfo()
 	if err != nil {
 		log.Fatalf("Failed to get blockchain info. %s", err)
 		resError := status.NewGetStatusInternalServerError()
