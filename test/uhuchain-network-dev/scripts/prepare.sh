@@ -18,7 +18,8 @@ CHAINCODE="$5"
 : ${CHANNEL_NAME:="car-ledger"}
 : ${TIMEOUT:="80"}
 : ${DELAY:="1"}
-: ${CHAINCODE:="mycc"}
+# TODO Check why 'carcc' is not working at all
+: ${CHAINCODE:="automotive"}
 COUNTER=1
 MAX_RETRY=5
 ORDERER_CA=/opt/gopath/src/github.com/uhuchain/uhuchain-api/test/uhuchain-network-dev/crypto-config/ordererOrganizations/orderer.uhuchain.com/orderers/orderer.insurancea.uhuchain.com/msp/tlscacerts/tlsca.orderer.uhuchain.com-cert.pem
@@ -134,7 +135,7 @@ installChaincode () {
 	PEER=$1
 	VERSION=$2
 	setGlobals $PEER
-	peer chaincode install -n $CHAINCODE -v $VERSION -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02 >&log.txt
+	peer chaincode install -n $CHAINCODE -v $VERSION -p github.com/hyperledger/fabric/examples/chaincode/go/uhuchain-code >&log.txt
 	res=$?
 	cat log.txt
         verifyResult $res "Chaincode installation on remote peer PEER$PEER has Failed"
@@ -146,11 +147,11 @@ instantiateChaincode () {
 	PEER=$1
 	VERSION=$2
 	setGlobals $PEER
-	echo "New version is $VERSION"
+	echo "Instantiaue $CHAINCODE version $VERSION"
 	# while 'peer chaincode' command can get the orderer endpoint from the peer (if join was successful),
 	# lets supply it directly as we know it using the "-o" option
 	if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
-		peer chaincode instantiate -o orderer.insurancea.uhuchain.com:7050 -C $CHANNEL_NAME -n $CHAINCODE -v $VERSION -c '{"Args":["init","a","100","b","200"]}' -P "OR	('InsuranceAMSP.member','InsuranceBMSP.member')" >&log.txt
+		peer chaincode instantiate -o orderer.insurancea.uhuchain.com:7050 -C $CHANNEL_NAME -n $CHAINCODE -v $VERSION  -c '{"Args":["init","a","100","b","200"]}' -P "OR	('InsuranceAMSP.member','InsuranceBMSP.member')" >&log.txt
 	else
 		peer chaincode instantiate -o orderer.insurancea.uhuchain.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n $CHAINCODE -v $VERSION -c '{"Args":["init","a","100","b","200"]}' -P "OR	('InsuranceAMSP.member','InsuranceBMSP.member')" >&log.txt
 	fi
@@ -169,9 +170,9 @@ upgradeChaincode () {
 	# while 'peer chaincode' command can get the orderer endpoint from the peer (if join was successful),
 	# lets supply it directly as we know it using the "-o" option
 	if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
-		peer chaincode upgrade -o orderer.insurancea.uhuchain.com:7050 -C $CHANNEL_NAME -n $CHAINCODE -v $VERSION -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02 -c '{"Args":["init","a","100","b","200"]}' -P "OR	('InsuranceAMSP.member','InsuranceBMSP.member')" >&log.txt
+		peer chaincode upgrade -o orderer.insurancea.uhuchain.com:7050 -C $CHANNEL_NAME -n $CHAINCODE -v $VERSION -p github.com/uhuchain/uhuchain-code -c '{"Args":["init","a","100","b","200"]}' -P "OR	('InsuranceAMSP.member','InsuranceBMSP.member')" >&log.txt
 	else
-		peer chaincode upgrade -o orderer.insurancea.uhuchain.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n $CHAINCODE -v $VERSION -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02 -c '{"Args":["init","a","100","b","200"]}' -P "OR	('InsuranceAMSP.member','InsuranceBMSP.member')" >&log.txt
+		peer chaincode upgrade -o orderer.insurancea.uhuchain.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n $CHAINCODE -v $VERSION -p github.com/uhuchain/uhuchain-code -c '{"Args":["init","a","100","b","200"]}' -P "OR	('InsuranceAMSP.member','InsuranceBMSP.member')" >&log.txt
 	fi
 	res=$?
 	cat log.txt
@@ -193,7 +194,7 @@ chaincodeQuery () {
   do
      sleep $DELAY
      echo "Attempting to Query PEER$PEER ...$(($(date +%s)-starttime)) secs"
-     peer chaincode query -C $CHANNEL_NAME -n mycc -c '{"Args":["query","a"]}' >&log.txt
+     peer chaincode query -C $CHANNEL_NAME -n $CHAINCODE -c '{"Args":["query","a"]}' >&log.txt
      test $? -eq 0 && VALUE=$(cat log.txt | awk '/Query Result/ {print $NF}')
      test "$VALUE" = "$2" && let rc=0
   done
@@ -215,9 +216,9 @@ chaincodeInvoke () {
 	# while 'peer chaincode' command can get the orderer endpoint from the peer (if join was successful),
 	# lets supply it directly as we know it using the "-o" option
 	if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
-		peer chaincode invoke -o orderer.insurancea.uhuchain.com:7050 -C $CHANNEL_NAME -n mycc -c '{"Args":["invoke","a","b","10"]}' >&log.txt
+		peer chaincode invoke -o orderer.insurancea.uhuchain.com:7050 -C $CHANNEL_NAME -n $CHAINCODE -c '{"Args":["invoke","a","b","10"]}' >&log.txt
 	else
-		peer chaincode invoke -o orderer.insurancea.uhuchain.com:7050  --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -c '{"Args":["invoke","a","b","10"]}' >&log.txt
+		peer chaincode invoke -o orderer.insurancea.uhuchain.com:7050  --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n $CHAINCODE -c '{"Args":["invoke","a","b","10"]}' >&log.txt
 	fi
 	res=$?
 	cat log.txt
@@ -255,7 +256,7 @@ if [ "$ACTION" == "prepare" ]; then
 
 	#Instantiate chaincode on Peer0/insurancea
 	echo "Instantiating chaincode on insurancea/peer0..."
-	instantiateChaincode 0 1.0
+	instantiateChaincode 0 $VERSION
 
 	echo
 	echo "========= All GOOD, preparation of Uhuchain network completed =========== "

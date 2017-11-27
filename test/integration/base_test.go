@@ -55,7 +55,7 @@ func TestClient(t *testing.T) {
 
 	t.Logf("Primary peers %s", setup.Channel.PrimaryPeer().URL())
 
-	testQuery("mycc", setup.ChannelClient, t)
+	testQuery("automotive", setup.ChannelClient, t)
 
 }
 

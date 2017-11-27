@@ -11,9 +11,8 @@ import (
 // HandleGetCar gets the car from the ledger
 func HandleGetCar(params car.GetCarParams) middleware.Responder {
 	carResult := &models.Car{}
-	ccID := "cc_car"
 	res := car.NewGetCarOK()
-	result, err := uhuClient.QueryLedger(ccID, strconv.FormatInt(params.ID, 10))
+	result, err := uhuClient.QueryLedger(carChainCode, strconv.FormatInt(params.ID, 10))
 	if err != nil {
 		res := car.NewGetCarInternalServerError()
 		message := createMessage(500, err.Error(), "error")

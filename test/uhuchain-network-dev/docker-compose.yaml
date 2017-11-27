@@ -221,16 +221,16 @@ services:
       - GOPATH=/opt/gopath
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - CORE_LOGGING_LEVEL=DEBUG
-      - CORE_PEER_ID=cli
+      - CORE_PEER_ID=uhuchain-server
       - GO_TAGS
       - GO_TESTFLAGS
       - CORE_PEER_ADDRESS=peer0.insurancea.uhuchain.com:7051
       - CORE_PEER_LOCALMSPID=InsuranceAMSP
       - CORE_PEER_TLS_ENABLED=true
-      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insurancea.uhuchain.com/peers/peer0.insurancea.uhuchain.com/tls/server.crt
-      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insurancea.uhuchain.com/peers/peer0.insurancea.uhuchain.com/tls/server.key
-      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insurancea.uhuchain.com/peers/peer0.insurancea.uhuchain.com/tls/ca.crt
-      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insurancea.uhuchain.com/users/Admin@insurancea.uhuchain.com/msp
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/uhuchain/uhuchain-api/test/uhuchain-network-dev/crypto-config/peerOrganizations/insurancea.uhuchain.com/peers/peer0.insurancea.uhuchain.com/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/uhuchain/uhuchain-api/test/uhuchain-network-dev/crypto-config/peerOrganizations/insurancea.uhuchain.com/peers/peer0.insurancea.uhuchain.com/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/uhuchain/uhuchain-api/test/uhuchain-network-dev/crypto-config/peerOrganizations/insurancea.uhuchain.com/peers/peer0.insurancea.uhuchain.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/uhuchain/uhuchain-api/test/uhuchain-network-dev/crypto-config/peerOrganizations/insurancea.uhuchain.com/users/Admin@insurancea.uhuchain.com/msp
       - UHU_CONFIG=/opt/gopath/src/github.com/uhuchain/uhuchain-api/test/client-config/config.yaml
       - UHU_CHANNELNAME=car-ledger
       - UHU_ORG=InsuranceA
@@ -241,7 +241,7 @@ services:
     working_dir: /opt/gopath/src/github.com/uhuchain/uhuchain-api
     volumes:
         - /var/run/:/host/var/run/
-        - ./chaincode/:/opt/gopath/src/github.com/hyperledger/fabric/examples/chaincode/go
+        - ../../../uhuchain-code:/opt/gopath/src/github.com/hyperledger/fabric/examples/chaincode/go/uhuchain-code
         - ../../../:/opt/gopath/src/github.com/uhuchain
     depends_on:
       - orderer.insurancea.uhuchain.com
