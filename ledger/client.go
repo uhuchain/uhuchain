@@ -11,6 +11,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/uhuchain/uhuchain-api/models"
+
 	"github.com/hyperledger/fabric-sdk-go/api/apitxn"
 	pb "github.com/hyperledger/fabric-sdk-go/third_party/github.com/hyperledger/fabric/protos/peer"
 )
@@ -126,8 +128,28 @@ func (client *FabricClient) Init() {
 	log.Println("Uhuchain client initilized successfully.")
 }
 
-// FabricClient wraps the hlf fabric sdk client
+// ClientMock mocks the hlf client
 type ClientMock struct {
-	//Setup client
-	Setup BaseSetupImpl
+}
+
+func (mock *ClientMock) GetBlockchainInfo() (string, error) {
+	res := models.APIResponse{
+		Code:    1000,
+		Message: "Uhuchain car ledger API is alive. Current block height:9 currentBlockHash:\"&\\021\\005_\\021\\325\\343T\\337\\213S\\206b?h\\2252\\010Y\\t\\331\\236\\213\\372\\244:V\\377\\324\\343e\\332\" previousBlockHash:\"\\343\\202O\\261\\367t\\310\\267\\242\\223\\177$[\\260\\022C={\\247\\266\\341\\207\\016\\r\\020\\337<\\211o++a\" ",
+		Type:    "message",
+	}
+	status, err := res.MarshalBinary()
+	return string(status), err
+}
+
+func (mock *ClientMock) QueryLedger(string, string) ([]byte, error) {
+	panic("not implemented")
+}
+
+func (mock *ClientMock) WriteToLedger(string, string, []byte) error {
+	panic("not implemented")
+}
+
+func (mock *ClientMock) Init() {
+	panic("not implemented")
 }
