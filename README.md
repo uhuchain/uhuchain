@@ -20,6 +20,8 @@ make depend-install
 
 ## Run 
 
+First, make sure that you checked out the `uhuchain-code` repo with `go get github.com/uhuchain/uhuchain-code`. The preparation script for the test network expects this repo for chaincode installation.
+
 The repo includes a hyperledger test network consisting of three parties and an ordering service.
 
 Running `make integration-test` will 
@@ -87,6 +89,8 @@ except for
 These files should be used for the actual implmentation of the endpoints.
 
 ## Testing
+
+Unit test are run with `make unit-tests`.
 
 For development and testing, login to the `uhuchain-server` container with `docker exec -it uhuchain-server bash`.
 
