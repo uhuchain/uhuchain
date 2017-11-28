@@ -12,9 +12,9 @@ import (
 // TODO Move GetStatusFailed to code generator / api definition
 
 // HandleStatus implements the handling of the status endpoint
-func HandleStatus(params status.GetStatusParams) middleware.Responder {
+func (handler *RequestHandler) HandleStatus(params status.GetStatusParams) middleware.Responder {
 	payload := &models.APIResponse{}
-	ledgerStatus, err := uhuClient.GetBlockchainInfo()
+	ledgerStatus, err := handler.uhuClient.GetBlockchainInfo()
 	if err != nil {
 		log.Fatalf("Failed to get blockchain info. %s", err)
 		resError := status.NewGetStatusInternalServerError()

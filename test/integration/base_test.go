@@ -10,7 +10,6 @@ import (
 	"os"
 	"testing"
 
-	"github.com/hyperledger/fabric-sdk-go/api/apitxn"
 	"github.com/uhuchain/uhuchain-api/ledger"
 )
 
@@ -34,37 +33,12 @@ func init() {
 }
 
 func TestClient(t *testing.T) {
-	err := setup.Initialize()
+	client := ledger.FabricClient{}
+	client.Init()
+	id := "123"
+	result, err := client.QueryLedger("automotive", id)
 	if err != nil {
-		t.Fatalf("Failed to init client setup: %s", err)
+		t.Fatalf("Failed to get %s. %s", id, err)
 	}
-
-	blockchaininfo, err := setup.Channel.QueryInfo()
-	if err != nil {
-		log.Fatalf("Failed to get current hashblock. %s", err)
-	}
-	block, err := setup.Channel.QueryBlockByHash(blockchaininfo.CurrentBlockHash)
-	if err != nil {
-		log.Fatalf("QueryBlockByHash return error: %v", err)
-	}
-
-	t.Logf("Current block: %s", block.String())
-	t.Logf("Total number of blocks: %d", blockchaininfo.GetHeight())
-	t.Logf("Peers %s", setup.Channel.Peers())
-	t.Logf("Blockchain info %s", blockchaininfo.String())
-
-	t.Logf("Primary peers %s", setup.Channel.PrimaryPeer().URL())
-
-	testQuery("automotive", setup.ChannelClient, t)
-
-}
-
-func testQuery(ccID string, chClient apitxn.ChannelClient, t *testing.T) {
-	t.Log("Query ledger")
-	var queryArgs = [][]byte{[]byte("b")}
-	result, err := chClient.Query(apitxn.QueryRequest{ChaincodeID: ccID, Fcn: "query", Args: queryArgs})
-	if err != nil {
-		t.Fatalf("Failed to invoke example cc: %s", err)
-	}
-	t.Logf("Query result: %s", result)
+	t.Logf("Got %s", result)
 }

@@ -22,8 +22,7 @@ import (
 )
 
 // This file is safe to edit. Once it exists it will not be overwritten
-// UhuClient is the global client object
-var UhuClient ledger.FabricClient
+var requestHandler handler.RequestHandler
 
 //go:generate swagger generate server --target .. --name uhuchain-api --spec ../swagger/swagger.yaml
 
@@ -41,14 +40,15 @@ func configureAPI(api *operations.UhuchainAPI) http.Handler {
 	// Example:
 	// api.Logger = log.Printf
 
-	// init the hyperledger fabric client (uhu client) here
-	initUhuClient()
+	// init the request handler with the hyperledger fabric client (uhu client) here
+	log.Println("Initializing UHU blockchain client")
+	requestHandler = handler.NewRequestHandler(&ledger.FabricClient{})
 
 	api.JSONConsumer = runtime.JSONConsumer()
 
 	api.JSONProducer = runtime.JSONProducer()
 
-	api.CarAddCarHandler = car.AddCarHandlerFunc(handler.HandleAddCar)
+	api.CarAddCarHandler = car.AddCarHandlerFunc(requestHandler.HandleAddCar)
 
 	api.ClaimAddClaimHandler = claim.AddClaimHandlerFunc(func(params claim.AddClaimParams) middleware.Responder {
 		return middleware.NotImplemented("operation claim.AddClaim has not yet been implemented")
@@ -57,19 +57,12 @@ func configureAPI(api *operations.UhuchainAPI) http.Handler {
 		return middleware.NotImplemented("operation policy.AddPolicy has not yet been implemented")
 	})
 
-	api.CarGetCarHandler = car.GetCarHandlerFunc(handler.HandleGetCar)
-	api.StatusGetStatusHandler = status.GetStatusHandlerFunc(handler.HandleStatus)
+	api.CarGetCarHandler = car.GetCarHandlerFunc(requestHandler.HandleGetCar)
+	api.StatusGetStatusHandler = status.GetStatusHandlerFunc(requestHandler.HandleStatus)
 
 	api.ServerShutdown = func() {}
 
 	return setupGlobalMiddleware(api.Serve(setupMiddlewares))
-}
-
-func initUhuClient() {
-	log.Println("Initializing UHU blockchain client")
-	UhuClient = ledger.FabricClient{}
-	UhuClient.Init()
-	handler.SetLedgerClient(&UhuClient)
 }
 
 // The TLS configuration before HTTPS server starts.

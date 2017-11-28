@@ -9,7 +9,7 @@ import (
 )
 
 // HandleAddCar adds a car from to ledger
-func HandleAddCar(params car.AddCarParams) middleware.Responder {
+func (handler *RequestHandler) HandleAddCar(params car.AddCarParams) middleware.Responder {
 	newCar := params.Body
 	carValue, err := newCar.MarshalBinary()
 	if err != nil {
@@ -18,7 +18,7 @@ func HandleAddCar(params car.AddCarParams) middleware.Responder {
 		return res.WithPayload(message)
 	}
 
-	err = uhuClient.WriteToLedger(carChainCode, strconv.FormatInt(newCar.ID, 10), carValue)
+	err = handler.uhuClient.WriteToLedger(handler.carChainCode, strconv.FormatInt(newCar.ID, 10), carValue)
 	if err != nil {
 		res := car.NewAddCarInternalServerError()
 		message := models.NewErrorResponse(500, err.Error())

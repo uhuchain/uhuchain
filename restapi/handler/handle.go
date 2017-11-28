@@ -4,11 +4,17 @@ import (
 	"github.com/uhuchain/uhuchain-api/ledger"
 )
 
-var uhuClient ledger.Client
+// RequestHandler to handle the uhuchain api requests
+type RequestHandler struct {
+	uhuClient    ledger.Client
+	carChainCode string
+}
 
-var carChainCode = "automotive"
-
-// SetLedgerClient sets the ledger client for the handler package
-func SetLedgerClient(uhuchainClient ledger.Client) {
-	uhuClient = uhuchainClient
+// NewRequestHandler sets the ledger client for the handler package
+func NewRequestHandler(uhuchainClient ledger.Client) RequestHandler {
+	requestHandler := RequestHandler{}
+	requestHandler.uhuClient = uhuchainClient
+	requestHandler.uhuClient.Init()
+	requestHandler.carChainCode = "automotive"
+	return requestHandler
 }

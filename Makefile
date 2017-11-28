@@ -98,7 +98,7 @@ spelling:
 	@test/scripts/check_spelling.sh
 
 unit-test: checks depend populate
-	@test/scripts/unit.sh
+	$(GO_CMD) test -v ./test/unit
 
 unit-tests: unit-test
 
