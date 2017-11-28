@@ -15,7 +15,7 @@ func HandleGetCar(params car.GetCarParams) middleware.Responder {
 	result, err := uhuClient.QueryLedger(carChainCode, strconv.FormatInt(params.ID, 10))
 	if err != nil {
 		res := car.NewGetCarInternalServerError()
-		message := createMessage(500, err.Error(), "error")
+		message := models.NewErrorResponse(500, err.Error())
 		return res.WithPayload(message)
 	}
 

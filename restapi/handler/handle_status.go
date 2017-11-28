@@ -13,24 +13,16 @@ import (
 
 // HandleStatus implements the handling of the status endpoint
 func HandleStatus(params status.GetStatusParams) middleware.Responder {
-	payload := models.APIResponse{}
+	payload := &models.APIResponse{}
 	ledgerStatus, err := uhuClient.GetBlockchainInfo()
 	if err != nil {
 		log.Fatalf("Failed to get blockchain info. %s", err)
 		resError := status.NewGetStatusInternalServerError()
-		payload = models.APIResponse{
-			Code:    1200,
-			Message: fmt.Sprintf("Uhuchain car ledger API is alive. Current block %s", ledgerStatus.String()),
-			Type:    "error",
-		}
-		return resError.WithPayload(&payload)
+		payload = models.NewErrorResponse(1200, fmt.Sprintf("Uhuchain car ledger API is alive. Current block %s", ledgerStatus))
+		return resError.WithPayload(payload)
 	}
 	res := status.NewGetStatusOK()
-	payload = models.APIResponse{
-		Code:    1000,
-		Message: fmt.Sprintf("Uhuchain car ledger API is alive. Current block %s", ledgerStatus.String()),
-		Type:    "message",
-	}
-	res.WithPayload(&payload)
+	payload = models.NewMessageResponse(1000, fmt.Sprintf("Uhuchain car ledger API is alive. Current block %s", ledgerStatus))
+	res.WithPayload(payload)
 	return res
 }

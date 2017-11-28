@@ -69,7 +69,7 @@ func initUhuClient() {
 	log.Println("Initializing UHU blockchain client")
 	UhuClient = ledger.FabricClient{}
 	UhuClient.Init()
-	handler.SetLedgerClient(UhuClient)
+	handler.SetLedgerClient(&UhuClient)
 }
 
 // The TLS configuration before HTTPS server starts.
