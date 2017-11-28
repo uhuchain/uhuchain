@@ -15,8 +15,6 @@ import (
 
 var setup ledger.BaseSetupImpl
 
-var initArgs = [][]byte{[]byte("init"), []byte("a"), []byte("100"), []byte("b"), []byte("200")}
-
 func init() {
 	log.SetOutput(os.Stdout)
 	log.Println("Initialize uhuchain ledger client ")
@@ -32,10 +30,14 @@ func init() {
 	}
 }
 
+// Test code that actually interacts with a running fabric framework
+// TODO Write full integration test
+
 func TestClient(t *testing.T) {
+
 	client := ledger.FabricClient{}
 	client.Init()
-	id := "123"
+	id := "a"
 	result, err := client.QueryLedger("automotive", id)
 	if err != nil {
 		t.Fatalf("Failed to get %s. %s", id, err)
