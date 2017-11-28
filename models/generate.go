@@ -1,3 +1,9 @@
+//
+// Copyright Uhuchain All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 package models
 
 func newApiResponse(code int32, message string, messageType string) *APIResponse {

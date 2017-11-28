@@ -91,13 +91,13 @@ checks: depend license lint spelling
 license:
 	@test/scripts/check_license.sh
 
-lint: populate
+lint:
 	@test/scripts/check_lint.sh
 
 spelling:
 	@test/scripts/check_spelling.sh
 
-unit-test: checks depend populate
+unit-test: checks
 	$(GO_CMD) test -v ./test/unit
 
 unit-tests: unit-test
