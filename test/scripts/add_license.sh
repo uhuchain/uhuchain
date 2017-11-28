@@ -1,5 +1,5 @@
 #!/bin/bash
-find . -name '*.[go]' ! -path '*vendor*'
+for i in find . -name '*.[go]' ! -path '*vendor*'
 do
   echo $i
   if ! grep -q SPDX-License-Identifier $i
