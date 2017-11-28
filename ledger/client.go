@@ -11,9 +11,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/uhuchain/uhuchain-api/models"
-
 	"github.com/hyperledger/fabric-sdk-go/api/apitxn"
+	"github.com/hyperledger/fabric-sdk-go/pkg/errors"
 	pb "github.com/hyperledger/fabric-sdk-go/third_party/github.com/hyperledger/fabric/protos/peer"
 )
 
@@ -78,12 +77,12 @@ func (client *FabricClient) QueryLedger(ccID string, id string) ([]byte, error) 
 }
 
 // WriteToLedger writes an object onto the ledger
-func (client *FabricClient) WriteToLedger(ccID string, carID string, value []byte) error {
+func (client *FabricClient) WriteToLedger(ccID string, id string, value []byte) error {
 	txNotifier := make(chan apitxn.ExecuteTxResponse)
 	txFilter := &TestTxFilter{}
 	txOpts := apitxn.ExecuteTxOpts{Notifier: txNotifier, TxFilter: txFilter}
 
-	var newCarArg = [][]byte{[]byte(carID), value}
+	var newCarArg = [][]byte{[]byte(id), value}
 
 	_, err := client.setup.ChannelClient.ExecuteTxWithOpts(apitxn.ExecuteTxRequest{ChaincodeID: ccID, Fcn: "write", Args: newCarArg}, txOpts)
 	if err != nil {
@@ -132,24 +131,50 @@ func (client *FabricClient) Init() {
 type ClientMock struct {
 }
 
+//GetBlockchainInfo mock
 func (mock *ClientMock) GetBlockchainInfo() (string, error) {
-	res := models.APIResponse{
-		Code:    1000,
-		Message: "Uhuchain car ledger API is alive. Current block height:9 currentBlockHash:\"&\\021\\005_\\021\\325\\343T\\337\\213S\\206b?h\\2252\\010Y\\t\\331\\236\\213\\372\\244:V\\377\\324\\343e\\332\" previousBlockHash:\"\\343\\202O\\261\\367t\\310\\267\\242\\223\\177$[\\260\\022C={\\247\\266\\341\\207\\016\\r\\020\\337<\\211o++a\" ",
-		Type:    "message",
+	return "Uhuchain car ledger API is alive. Current block height:9 currentBlockHash:\"&\\021\\005_\\021\\325\\343T\\337\\213S\\206b?h\\2252\\010Y\\t\\331\\236\\213\\372\\244:V\\377\\324\\343e\\332\" previousBlockHash:\"\\343\\202O\\261\\367t\\310\\267\\242\\223\\177$[\\260\\022C={\\247\\266\\341\\207\\016\\r\\020\\337<\\211o++a\" ", nil
+}
+
+//QueryLedger mock. Use id 12345 to get a car object and everything else to get an error.
+func (mock *ClientMock) QueryLedger(ccID string, id string) ([]byte, error) {
+	car := ""
+	if id == "12345" {
+		car = `{
+			"brand": "Volkswagen",
+			"id": 12345,
+			"model": "Sharan GTI",
+			"policies": [
+				{
+					"claims": [
+						{
+							"date": "2016-11-01",
+							"description": "Something bad happend",
+							"id": 12345
+						}
+					],
+					"endDate": "2017-09-01",
+					"id": 12345,
+					"insuranceId": 12345,
+					"insuranceName": "Zurich Insurance Group",
+					"startDate": "2016-09-01"
+				}
+			],
+			"vehicleId": "THK34SDM6A2D34"
+		}`
+		return []byte(car), nil
 	}
-	status, err := res.MarshalBinary()
-	return string(status), err
+	return []byte(car), errors.New("not found")
 }
 
-func (mock *ClientMock) QueryLedger(string, string) ([]byte, error) {
-	panic("not implemented")
+//WriteToLedger mock. Use id 12345 to write successfully to ledger
+func (mock *ClientMock) WriteToLedger(ccID string, id string, value []byte) error {
+	if id == "12345" {
+		return nil
+	}
+	return errors.New("Unable to write onto the ledger")
 }
 
-func (mock *ClientMock) WriteToLedger(string, string, []byte) error {
-	panic("not implemented")
-}
-
+//Init mock
 func (mock *ClientMock) Init() {
-	panic("not implemented")
 }

@@ -18,11 +18,11 @@ func HandleStatus(params status.GetStatusParams) middleware.Responder {
 	if err != nil {
 		log.Fatalf("Failed to get blockchain info. %s", err)
 		resError := status.NewGetStatusInternalServerError()
-		payload = models.NewErrorResponse(1200, fmt.Sprintf("Uhuchain car ledger API is alive. Current block %s", ledgerStatus))
+		payload = models.NewErrorResponse(1200, fmt.Sprintf("Unable to get the uhuchain ledger status. %s", err))
 		return resError.WithPayload(payload)
 	}
 	res := status.NewGetStatusOK()
-	payload = models.NewMessageResponse(1000, fmt.Sprintf("Uhuchain car ledger API is alive. Current block %s", ledgerStatus))
+	payload = models.NewMessageResponse(1000, fmt.Sprintf("Uhuchain car ledger API is alive. Ledger status: %s", ledgerStatus))
 	res.WithPayload(payload)
 	return res
 }
