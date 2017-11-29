@@ -19,7 +19,6 @@ import (
 
 func TestHandleStatus(t *testing.T) {
 	requestHandler := handler.NewRequestHandler(&ClientMock{})
-
 	type args struct {
 		params status.GetStatusParams
 	}

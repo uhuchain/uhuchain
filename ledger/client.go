@@ -15,6 +15,20 @@ import (
 	pb "github.com/hyperledger/fabric-sdk-go/third_party/github.com/hyperledger/fabric/protos/peer"
 )
 
+func init() {
+	envVariables := [7]string{"UHU_CONFIG", "UHU_CHANNELNAME",
+		"UHU_ORG", "UHU_ORDERER", "UHU_CHANNELCONFIG",
+		"UHU_USERID", "UHU_ADMINID",
+	}
+	for i := range envVariables {
+		v := envVariables[i]
+		if _, exists := os.LookupEnv(v); exists == false {
+			log.Fatalf("Failed to init uhuchain server. $%s not found.", v)
+			os.Exit(1)
+		}
+	}
+}
+
 // Client defines the interface for a client that interacts with the ledger
 type Client interface {
 	GetBlockchainInfo() (string, error)
