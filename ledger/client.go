@@ -16,9 +16,12 @@ import (
 )
 
 func init() {
-	envVariables := [7]string{"UHU_CONFIG", "UHU_CHANNELNAME",
-		"UHU_ORG", "UHU_ORDERER", "UHU_CHANNELCONFIG",
-		"UHU_USERID", "UHU_ADMINID",
+	envVariables := [7]string{"UHU_CONFIG",
+		"UHU_CHANNELNAME",
+		"UHU_ORG", "UHU_ORDERER",
+		"UHU_CHANNELCONFIG",
+		"UHU_USERID",
+		"UHU_ADMINID",
 	}
 	for i := range envVariables {
 		v := envVariables[i]
