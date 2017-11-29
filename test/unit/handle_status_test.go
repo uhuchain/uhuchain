@@ -13,13 +13,12 @@ import (
 	"github.com/uhuchain/uhuchain-api/models"
 
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/uhuchain/uhuchain-api/ledger"
 	"github.com/uhuchain/uhuchain-api/restapi/handler"
 	"github.com/uhuchain/uhuchain-api/restapi/operations/status"
 )
 
 func TestHandleStatus(t *testing.T) {
-	requestHandler := handler.NewRequestHandler(&ledger.ClientMock{})
+	requestHandler := handler.NewRequestHandler(&ClientMock{})
 
 	type args struct {
 		params status.GetStatusParams

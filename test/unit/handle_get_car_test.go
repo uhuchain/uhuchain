@@ -13,7 +13,6 @@ import (
 	"github.com/uhuchain/uhuchain-api/models"
 
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/uhuchain/uhuchain-api/ledger"
 	"github.com/uhuchain/uhuchain-api/restapi/handler"
 	"github.com/uhuchain/uhuchain-api/restapi/operations/car"
 )
@@ -41,7 +40,7 @@ func TestHandleGetCar(t *testing.T) {
 		],
 		"vehicleId": "THK34SDM6A2D34"
 	}`
-	mockClient := &ledger.ClientMock{
+	mockClient := &ClientMock{
 		QueryResponse: payload,
 	}
 	requestHandler := handler.NewRequestHandler(mockClient)
