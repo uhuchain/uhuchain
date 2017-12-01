@@ -13,8 +13,8 @@ import (
 	"github.com/uhuchain/uhuchain-api/core/models"
 
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/uhuchain/uhuchain-api/interfaces/rest/handler"
-	"github.com/uhuchain/uhuchain-api/interfaces/rest/operations/status"
+	"github.com/uhuchain/uhuchain-api/providers/rest/handler"
+	"github.com/uhuchain/uhuchain-api/providers/rest/operations/status"
 )
 
 func TestHandleStatus(t *testing.T) {

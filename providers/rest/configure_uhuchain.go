@@ -18,13 +18,13 @@ import (
 	middleware "github.com/go-openapi/runtime/middleware"
 	graceful "github.com/tylerb/graceful"
 
-	"github.com/uhuchain/uhuchain-api/interfaces/hlf"
-	"github.com/uhuchain/uhuchain-api/interfaces/rest/handler"
-	"github.com/uhuchain/uhuchain-api/interfaces/rest/operations"
-	"github.com/uhuchain/uhuchain-api/interfaces/rest/operations/car"
-	"github.com/uhuchain/uhuchain-api/interfaces/rest/operations/claim"
-	"github.com/uhuchain/uhuchain-api/interfaces/rest/operations/policy"
-	"github.com/uhuchain/uhuchain-api/interfaces/rest/operations/status"
+	"github.com/uhuchain/uhuchain-api/providers/hlf"
+	"github.com/uhuchain/uhuchain-api/providers/rest/handler"
+	"github.com/uhuchain/uhuchain-api/providers/rest/operations"
+	"github.com/uhuchain/uhuchain-api/providers/rest/operations/car"
+	"github.com/uhuchain/uhuchain-api/providers/rest/operations/claim"
+	"github.com/uhuchain/uhuchain-api/providers/rest/operations/policy"
+	"github.com/uhuchain/uhuchain-api/providers/rest/operations/status"
 )
 
 // This file is safe to edit. Once it exists it will not be overwritten

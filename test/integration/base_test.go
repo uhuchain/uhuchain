@@ -10,7 +10,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/uhuchain/uhuchain-api/interfaces/hlf"
+	"github.com/uhuchain/uhuchain-api/providers/hlf"
 )
 
 var setup hlf.BaseSetupImpl

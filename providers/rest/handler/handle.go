@@ -6,7 +6,7 @@
 
 package handler
 
-import "github.com/uhuchain/uhuchain-api/interfaces/hlf"
+import "github.com/uhuchain/uhuchain-api/providers/hlf"
 
 // RequestHandler to handle the uhuchain api requests
 type RequestHandler struct {

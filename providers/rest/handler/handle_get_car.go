@@ -12,7 +12,7 @@ import (
 
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/uhuchain/uhuchain-api/core/models"
-	"github.com/uhuchain/uhuchain-api/interfaces/rest/operations/car"
+	"github.com/uhuchain/uhuchain-api/providers/rest/operations/car"
 )
 
 // HandleGetCar gets the car from the ledger
