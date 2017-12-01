@@ -7,8 +7,6 @@
 package handler
 
 import (
-	"strconv"
-
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/uhuchain/uhuchain-api/providers/rest/operations/car"
 	"github.com/uhuchain/uhuchain-core/models"
@@ -24,7 +22,7 @@ func (handler *RequestHandler) HandleAddCar(params car.AddCarParams) middleware.
 		return res.WithPayload(message)
 	}
 
-	var args = [][]byte{[]byte(strconv.FormatInt(newCar.ID, 10)), []byte(carValue)}
+	var args = [][]byte{[]byte(carValue)}
 
 	err = handler.uhuClient.Invoke(handler.carChainCode, "saveCar", args)
 	if err != nil {
