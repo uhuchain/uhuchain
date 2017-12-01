@@ -1,3 +1,5 @@
+// +build !test
+
 /*
 Copyright Uhuchain. All Rights Reserved.
 
@@ -30,14 +32,6 @@ func init() {
 			os.Exit(1)
 		}
 	}
-}
-
-// Client defines the interface for a client that interacts with the ledger
-type Client interface {
-	GetBlockchainInfo() (string, error)
-	QueryLedger(string, string) ([]byte, error)
-	WriteToLedger(string, string, []byte) error
-	Init()
 }
 
 // FabricClient wraps the hlf fabric sdk client
