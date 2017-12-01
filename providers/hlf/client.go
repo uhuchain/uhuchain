@@ -86,15 +86,13 @@ func (client *FabricClient) QueryLedger(ccID string, id string) ([]byte, error) 
 	return result, nil
 }
 
-// WriteToLedger writes an object onto the ledger
-func (client *FabricClient) WriteToLedger(ccID string, id string, value []byte) error {
+// Invoke a chaincode function on the ledger
+func (client *FabricClient) Invoke(ccID string, fcn string, args [][]byte) error {
 	txNotifier := make(chan apitxn.ExecuteTxResponse)
 	txFilter := &TestTxFilter{}
 	txOpts := apitxn.ExecuteTxOpts{Notifier: txNotifier, TxFilter: txFilter}
 
-	var newCarArg = [][]byte{[]byte(id), value}
-
-	_, err := client.setup.ChannelClient.ExecuteTxWithOpts(apitxn.ExecuteTxRequest{ChaincodeID: ccID, Fcn: "write", Args: newCarArg}, txOpts)
+	_, err := client.setup.ChannelClient.ExecuteTxWithOpts(apitxn.ExecuteTxRequest{ChaincodeID: ccID, Fcn: fcn, Args: args}, txOpts)
 	if err != nil {
 		log.Fatalf("Failed to move funds: %s", err)
 		return err

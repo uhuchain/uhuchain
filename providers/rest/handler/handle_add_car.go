@@ -10,8 +10,8 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/uhuchain/uhuchain-api/core/models"
 	"github.com/uhuchain/uhuchain-api/providers/rest/operations/car"
+	"github.com/uhuchain/uhuchain-core/models"
 )
 
 // HandleAddCar adds a car from to ledger
@@ -24,7 +24,9 @@ func (handler *RequestHandler) HandleAddCar(params car.AddCarParams) middleware.
 		return res.WithPayload(message)
 	}
 
-	err = handler.uhuClient.WriteToLedger(handler.carChainCode, strconv.FormatInt(newCar.ID, 10), carValue)
+	var args = [][]byte{[]byte(strconv.FormatInt(newCar.ID, 10)), []byte(carValue)}
+
+	err = handler.uhuClient.Invoke(handler.carChainCode, "saveCar", args)
 	if err != nil {
 		res := car.NewAddCarInternalServerError()
 		message := models.NewErrorResponse(500, err.Error())

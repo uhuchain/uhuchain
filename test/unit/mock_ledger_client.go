@@ -24,12 +24,17 @@ func (mock *ClientMock) QueryLedger(ccID string, id string) ([]byte, error) {
 	return []byte(""), errors.New(errorMessage)
 }
 
-//WriteToLedger mock. Use id 12345 to write successfully to ledger
-func (mock *ClientMock) WriteToLedger(ccID string, id string, value []byte) error {
-	if id == "12345" {
-		return nil
+//Invoke mocks the functions on the chaincode
+func (mock *ClientMock) Invoke(ccID string, fnc string, args [][]byte) error {
+	if fnc == "saveCar" {
+		id := string(args[0])
+		if id == "12345" {
+			return nil
+		}
+		return errors.New("Unable to write onto the ledger")
 	}
-	return errors.New("Unable to write onto the ledger")
+
+	return errors.New("Not implemented yet.")
 }
 
 //Init mock

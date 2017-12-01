@@ -296,6 +296,12 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/uhuchain/uhuchain-core"
+  packages = ["models"]
+  revision = "44bd236b6d3f793c25d5874ae53847d3afad49dc"
+
+[[projects]]
+  branch = "master"
   name = "golang.org/x/crypto"
   packages = ["ocsp","pkcs12","pkcs12/internal/rc2","sha3","ssh/terminal"]
   revision = "9f005a07e0d31d45e6656d241bb5c0f2efd4bc94"
@@ -351,6 +357,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "7e084581cd55e1d46c482f7f1960813feff5cd197774f5e3e79ec127b9cf1c59"
+  inputs-digest = "886a7f39d84cd33deaba9dc5ec1f50a8664f3a208d4f0b4aa5a81744ca688d8b"
   solver-name = "gps-cdcl"
   solver-version = 1

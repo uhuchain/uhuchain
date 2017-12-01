@@ -11,8 +11,8 @@ import (
 	"strings"
 
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/uhuchain/uhuchain-api/core/models"
 	"github.com/uhuchain/uhuchain-api/providers/rest/operations/car"
+	"github.com/uhuchain/uhuchain-core/models"
 )
 
 // HandleGetCar gets the car from the ledger

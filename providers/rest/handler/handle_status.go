@@ -11,7 +11,7 @@ import (
 	"log"
 
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/uhuchain/uhuchain-api/core/models"
+	"github.com/uhuchain/uhuchain-core/models"
 	"github.com/uhuchain/uhuchain-api/providers/rest/operations/status"
 )
 

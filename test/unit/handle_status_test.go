@@ -10,7 +10,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/uhuchain/uhuchain-api/core/models"
+	"github.com/uhuchain/uhuchain-core/models"
 
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/uhuchain/uhuchain-api/providers/rest/handler"

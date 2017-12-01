@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-openapi/runtime"
 
-	"github.com/uhuchain/uhuchain-api/core/models"
+	"github.com/uhuchain/uhuchain-core/models"
 )
 
 // GetStatusOKCode is the HTTP code returned for type GetStatusOK

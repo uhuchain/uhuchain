@@ -4,6 +4,6 @@ package hlf
 type Client interface {
 	GetBlockchainInfo() (string, error)
 	QueryLedger(string, string) ([]byte, error)
-	WriteToLedger(string, string, []byte) error
+	Invoke(string, string, [][]byte) error
 	Init()
 }
