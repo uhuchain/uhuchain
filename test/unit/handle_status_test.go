@@ -10,11 +10,11 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/uhuchain/uhuchain-api/models"
+	"github.com/uhuchain/uhuchain-api/core/models"
 
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/uhuchain/uhuchain-api/restapi/handler"
-	"github.com/uhuchain/uhuchain-api/restapi/operations/status"
+	"github.com/uhuchain/uhuchain-api/interfaces/rest/handler"
+	"github.com/uhuchain/uhuchain-api/interfaces/rest/operations/status"
 )
 
 func TestHandleStatus(t *testing.T) {

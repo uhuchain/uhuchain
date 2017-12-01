@@ -11,9 +11,9 @@ import (
 	"testing"
 
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/uhuchain/uhuchain-api/models"
-	"github.com/uhuchain/uhuchain-api/restapi/handler"
-	"github.com/uhuchain/uhuchain-api/restapi/operations/car"
+	"github.com/uhuchain/uhuchain-api/interfaces/rest/handler"
+	"github.com/uhuchain/uhuchain-api/interfaces/rest/operations/car"
+	"github.com/uhuchain/uhuchain-api/core/models"
 )
 
 func TestRequestHandler_HandleAddCar(t *testing.T) {
