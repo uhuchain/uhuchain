@@ -10,15 +10,15 @@ import (
 	"os"
 	"testing"
 
-	"github.com/uhuchain/uhuchain-api/ledger"
+	"github.com/uhuchain/uhuchain-api/interfaces/hlf"
 )
 
-var setup ledger.BaseSetupImpl
+var setup hlf.BaseSetupImpl
 
 func init() {
 	log.SetOutput(os.Stdout)
 	log.Println("Initialize uhuchain ledger client ")
-	setup = ledger.BaseSetupImpl{
+	setup = hlf.BaseSetupImpl{
 		ConfigFile:      os.Getenv("UHU_CONFIG"),
 		ChannelID:       os.Getenv("UHU_CHANNELNAME"),
 		OrgID:           os.Getenv("UHU_ORG"),
@@ -35,7 +35,7 @@ func init() {
 
 func TestClient(t *testing.T) {
 
-	client := ledger.FabricClient{}
+	client := hlf.FabricClient{}
 	client.Init()
 	id := "a"
 	result, err := client.QueryLedger("automotive", id)

@@ -73,7 +73,7 @@ Example: `uhuchain-server --scheme=http --host=0.0.0.0 --port=3333`
 
 ## Development
 
-The api endpoints and models are generated based on the swagger 2.0 spec using the ["go-swagger"](https://goswagger.io) tool. After installing `go-swagger` run `swagger generate server -m core/models -s interfaces/rest -f ./swagger/swagger.yaml -A uhuchain-api` from the root of this repository.
+The api endpoints and models are generated based on the swagger 2.0 spec using the ["go-swagger"](https://goswagger.io) tool. After installing `go-swagger` run `swagger generate server -m models -s rest -f ./swagger/swagger.yaml -A uhuchain-api` from the root of this repository. Afterwards, the files in the created folders `models` and `rest` have to be moved to into the subfolders `interfaces` and `core`. TODO Automated this.
 
 The generator will replace **all** files in the following directories:
 
