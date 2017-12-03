@@ -135,7 +135,7 @@ installChaincode () {
 	PEER=$1
 	VERSION=$2
 	setGlobals $PEER
-	peer chaincode install -n $CHAINCODE -v $VERSION -p github.com/hyperledger/fabric/examples/chaincode/go/uhuchain-code >&log.txt
+	peer chaincode install -n $CHAINCODE -v $VERSION -p github.com/uhuchain/uhuchain-code >&log.txt
 	res=$?
 	cat log.txt
         verifyResult $res "Chaincode installation on remote peer PEER$PEER has Failed"
@@ -147,11 +147,11 @@ instantiateChaincode () {
 	PEER=$1
 	VERSION=$2
 	setGlobals $PEER
-	echo "Instantiaue $CHAINCODE version $VERSION"
+	echo "Instantiate $CHAINCODE version $VERSION"
 	# while 'peer chaincode' command can get the orderer endpoint from the peer (if join was successful),
 	# lets supply it directly as we know it using the "-o" option
 	if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
-		peer chaincode instantiate -o orderer.insurancea.uhuchain.com:7050 -C $CHANNEL_NAME -n $CHAINCODE -v $VERSION  -c '{"Args":["init","a","100","b","200"]}' -P "OR	('InsuranceAMSP.member','InsuranceBMSP.member')" >&log.txt
+		peer chaincode instantiate -o orderer.insurancea.uhuchain.com:7050 -C $CHANNEL_NAME -n $CHAINCODE -v $VERSION -c '{"Args":["init","a","100","b","200"]}' -P "OR	('InsuranceAMSP.member','InsuranceBMSP.member')" >&log.txt
 	else
 		peer chaincode instantiate -o orderer.insurancea.uhuchain.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n $CHAINCODE -v $VERSION -c '{"Args":["init","a","100","b","200"]}' -P "OR	('InsuranceAMSP.member','InsuranceBMSP.member')" >&log.txt
 	fi
@@ -248,9 +248,9 @@ if [ "$ACTION" == "prepare" ]; then
 	done
 
 	## Install chaincode on Peer0/insurancea and Peer2/insuranceb
-	for i in 0 1 2 3 4 5 
+	for i in 0
 	do
-		echo "Installing chaincode on insurancea/peer0..."
+		echo "Installing chaincode on insurancea/peer$i ..."
 		installChaincode $i $VERSION
 	done
 
@@ -288,9 +288,9 @@ if [ "$ACTION" == "upgrade" ]; then
 	echo "========= Starting upgrade chaincode $CHAINCODE to version $VERSION =========== "
 	echo
 
-	for i in 0 1 2 3 4 5 
+	for i in 0
 	do
-		echo "Installing chaincode $CHAINCODE version $VERSION on insurancea/peer0..."
+		echo "Installing chaincode $CHAINCODE version $VERSION on insurancea/peer$i"
 		installChaincode $i $VERSION
 	done
 

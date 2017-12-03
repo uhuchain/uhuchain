@@ -88,6 +88,7 @@ func (client *FabricClient) QueryLedger(ccID string, fcn string, id string) ([]b
 
 // Invoke a chaincode function on the ledger
 func (client *FabricClient) Invoke(ccID string, fcn string, args [][]byte) error {
+	log.Printf("Invoking function %s", fcn)
 	txNotifier := make(chan apitxn.ExecuteTxResponse)
 	txFilter := &TestTxFilter{}
 	txOpts := apitxn.ExecuteTxOpts{Notifier: txNotifier, TxFilter: txFilter}

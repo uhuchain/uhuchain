@@ -241,7 +241,6 @@ services:
     working_dir: /opt/gopath/src/github.com/uhuchain/uhuchain-api
     volumes:
         - /var/run/:/host/var/run/
-        - ../../../uhuchain-code:/opt/gopath/src/github.com/hyperledger/fabric/examples/chaincode/go/uhuchain-code
         - ../../../:/opt/gopath/src/github.com/uhuchain
     depends_on:
       - orderer.insurancea.uhuchain.com
