@@ -37,10 +37,9 @@ func TestClient(t *testing.T) {
 
 	client := hlf.FabricClient{}
 	client.Init()
-	id := "a"
-	result, err := client.QueryLedger("automotive", id)
+	result, err := client.GetBlockchainInfo()
 	if err != nil {
-		t.Fatalf("Failed to get %s. %s", id, err)
+		t.Fatalf("Failed to call ledger - %s", err)
 	}
 	t.Logf("Got %s", result)
 }

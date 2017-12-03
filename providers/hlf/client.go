@@ -74,10 +74,10 @@ func (client *FabricClient) GetBlockchainInfo() (string, error) {
 }
 
 // QueryLedger performs a basic query operation on the ledger
-func (client *FabricClient) QueryLedger(ccID string, id string) ([]byte, error) {
+func (client *FabricClient) QueryLedger(ccID string, fcn string, id string) ([]byte, error) {
 	log.Print("Query ledger")
 	var queryArgs = [][]byte{[]byte(id)}
-	result, err := client.setup.ChannelClient.Query(apitxn.QueryRequest{ChaincodeID: ccID, Fcn: "query", Args: queryArgs})
+	result, err := client.setup.ChannelClient.Query(apitxn.QueryRequest{ChaincodeID: ccID, Fcn: fcn, Args: queryArgs})
 	if err != nil {
 		log.Fatalf("Failed to invoke example cc: %s", err)
 		return nil, err

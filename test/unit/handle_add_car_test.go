@@ -72,6 +72,7 @@ func TestRequestHandler_HandleAddCar(t *testing.T) {
 			if got := requestHandler.HandleAddCar(tt.args.params); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("RequestHandler.HandleAddCar() = %v, want %v", got, tt.want)
 			}
+
 		})
 	}
 }

@@ -3,6 +3,8 @@ package unit
 import (
 	"errors"
 	"fmt"
+
+	"github.com/uhuchain/uhuchain-core/models"
 )
 
 // ClientMock mocks the hlf client
@@ -16,7 +18,7 @@ func (mock *ClientMock) GetBlockchainInfo() (string, error) {
 }
 
 //QueryLedger mock. Use id 12345 to get a car object and everything else to get an error.
-func (mock *ClientMock) QueryLedger(ccID string, id string) ([]byte, error) {
+func (mock *ClientMock) QueryLedger(ccID string, fnc string, id string) ([]byte, error) {
 	if id == "12345" {
 		return []byte(mock.QueryResponse), nil
 	}
@@ -27,14 +29,18 @@ func (mock *ClientMock) QueryLedger(ccID string, id string) ([]byte, error) {
 //Invoke mocks the functions on the chaincode
 func (mock *ClientMock) Invoke(ccID string, fnc string, args [][]byte) error {
 	if fnc == "saveCar" {
-		id := string(args[0])
-		if id == "12345" {
+		car := models.Car{}
+		err := car.UnmarshalBinary(args[0])
+		if err != nil {
+			return err
+		}
+		if car.ID == 12345 {
 			return nil
 		}
-		return errors.New("Unable to write onto the ledger")
+		return errors.New("unable to write onto the ledger")
 	}
 
-	return errors.New("Not implemented yet.")
+	return errors.New("not implemented yet")
 }
 
 //Init mock

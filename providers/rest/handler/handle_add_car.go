@@ -15,6 +15,7 @@ import (
 // HandleAddCar adds a car from to ledger
 func (handler *RequestHandler) HandleAddCar(params car.AddCarParams) middleware.Responder {
 	newCar := params.Body
+
 	carValue, err := newCar.MarshalBinary()
 	if err != nil {
 		res := car.NewAddCarBadRequest()

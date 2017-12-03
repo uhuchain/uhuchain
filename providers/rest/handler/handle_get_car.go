@@ -19,7 +19,7 @@ import (
 func (handler *RequestHandler) HandleGetCar(params car.GetCarParams) middleware.Responder {
 	carResult := &models.Car{}
 	res := car.NewGetCarOK()
-	result, err := handler.uhuClient.QueryLedger(handler.carChainCode, strconv.FormatInt(params.ID, 10))
+	result, err := handler.uhuClient.QueryLedger(handler.carChainCode, "getCar", strconv.FormatInt(params.ID, 10))
 	if err != nil {
 		// TODO check if there is a better way to classify error responses
 		if strings.Contains(err.Error(), "Nil amount for") {
