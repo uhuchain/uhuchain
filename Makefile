@@ -156,3 +156,4 @@ clean:
 	rm -Rf /tmp/enroll_user /tmp/msp /tmp/keyvaluestore /tmp/hfc-kvs
 	rm -f integration-report.xml report.xml
 	@cd ./test/uhuchain-network-dev && $(DOCKER_COMPOSE_CMD) -f docker-compose.yaml down
+	./test/scripts/clean_docker_images.sh uhuchain
