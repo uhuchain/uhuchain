@@ -29,7 +29,6 @@ func init() {
 		v := envVariables[i]
 		if _, exists := os.LookupEnv(v); exists == false {
 			log.Fatalf("Failed to init uhuchain server. $%s not found.", v)
-			os.Exit(1)
 		}
 	}
 }
@@ -67,7 +66,7 @@ func (client *FabricClient) GetBlockchainInfo() (string, error) {
 	blockchaininfo, err := client.setup.Channel.QueryInfo()
 
 	if err != nil {
-		log.Fatalf("Failed to get current blcokchaininfo. %s", err)
+		log.Printf("Failed to get current blcokchaininfo. %s", err)
 		return "", err
 	}
 	return blockchaininfo.String(), nil
@@ -79,7 +78,7 @@ func (client *FabricClient) QueryLedger(ccID string, fcn string, id string) ([]b
 	var queryArgs = [][]byte{[]byte(id)}
 	result, err := client.setup.ChannelClient.Query(apitxn.QueryRequest{ChaincodeID: ccID, Fcn: fcn, Args: queryArgs})
 	if err != nil {
-		log.Fatalf("Failed to invoke example cc: %s", err)
+		log.Printf("Failed to invoke cc: %s", err)
 		return nil, err
 	}
 	log.Printf("Query result: %s", result)
@@ -95,22 +94,22 @@ func (client *FabricClient) Invoke(ccID string, fcn string, args [][]byte) error
 
 	_, err := client.setup.ChannelClient.ExecuteTxWithOpts(apitxn.ExecuteTxRequest{ChaincodeID: ccID, Fcn: fcn, Args: args}, txOpts)
 	if err != nil {
-		log.Fatalf("Failed to move funds: %s", err)
+		log.Printf("Failed to move funds: %s", err)
 		return err
 	}
 
 	select {
 	case response := <-txNotifier:
 		if response.Error != nil {
-			log.Fatalf("ExecuteTx returned error: %s", response.Error)
+			log.Printf("ExecuteTx returned error: %s", response.Error)
 			return err
 		}
 		if response.TxValidationCode != pb.TxValidationCode_VALID {
-			log.Fatalf("Expecting TxValidationCode to be TxValidationCode_VALID but received: %s", response.TxValidationCode)
+			log.Printf("Expecting TxValidationCode to be TxValidationCode_VALID but received: %s", response.TxValidationCode)
 			return err
 		}
 	case <-time.After(time.Second * 20):
-		log.Fatalf("ExecuteTx timed out")
+		log.Printf("ExecuteTx timed out")
 		return err
 	}
 	return nil
@@ -130,7 +129,7 @@ func (client *FabricClient) Init() {
 	}
 	err := client.setup.Initialize()
 	if err != nil {
-		log.Fatalf("Failed to init client setup: %s", err)
+		log.Printf("Failed to init client setup: %s", err)
 		os.Exit(1)
 	}
 	log.Println("Uhuchain client initilized successfully.")

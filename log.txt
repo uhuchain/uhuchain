@@ -1,14 +1,14 @@
-[36m2017-12-03 12:59:08.671 UTC [msp] GetLocalMSP -> DEBU 001[0m Returning existing local MSP
-[36m2017-12-03 12:59:08.671 UTC [msp] GetDefaultSigningIdentity -> DEBU 002[0m Obtaining default signing identity
-2017-12-03 12:59:08.680 UTC [chaincodeCmd] checkChaincodeCmdParams -> INFO 003[0m Using default escc
-2017-12-03 12:59:08.681 UTC [chaincodeCmd] checkChaincodeCmdParams -> INFO 004[0m Using default vscc
-[36m2017-12-03 12:59:08.682 UTC [chaincodeCmd] getChaincodeSpec -> DEBU 005[0m java chaincode disabled
-[36m2017-12-03 12:59:08.683 UTC [chaincodeCmd] upgrade -> DEBU 006[0m Get upgrade proposal for chaincode <path:"github.com/uhuchain/uhuchain-code" name:"automotive" version:"1.2" >
-[36m2017-12-03 12:59:08.683 UTC [msp/identity] Sign -> DEBU 007[0m Sign: plaintext: 0ACE070A6808031A0C089CEA8FD10510...424D53500A04657363630A0476736363 
-[36m2017-12-03 12:59:08.684 UTC [msp/identity] Sign -> DEBU 008[0m Sign: digest: 38B9EC6AEC0B041C008BACE432D25E3E081186CDB13D79DCE42948427A2C9920 
-[36m2017-12-03 12:59:33.119 UTC [chaincodeCmd] upgrade -> DEBU 009[0m endorse upgrade proposal, get response <status:200 message:"OK" payload:"\n\nautomotive\022\0031.2\032\004escc\"\004vscc*4\022\014\022\n\010\001\022\002\010\000\022\002\010\001\032\021\022\017\n\rInsuranceAMSP\032\021\022\017\n\rInsuranceBMSP2D\n \327\262\367\260\202\303mO\254iIs\201\256\343\343\263*\"\372\364\247\244\325\177\314\230\251O\221\265\374\022 RA\233\274\323\260\374\034\214\000l\330\257\236\345\"\260\327\020q\266\3031\001g\376\223a\320\036\350\353: \230\365sy$\326j\347\005\"\022\227\254[Q\253\376KT4\034\\\373l~\364]\365\357\002\203WBQ\022\020\022\016\010\001\022\002\010\000\022\002\010\001\022\002\010\002\032\023\022\021\n\rInsuranceAMSP\020\001\032\023\022\021\n\rInsuranceBMSP\020\001\032\023\022\021\n\rInsuranceCMSP\020\001" >
-[36m2017-12-03 12:59:33.120 UTC [msp/identity] Sign -> DEBU 00a[0m Sign: plaintext: 0ACE070A6808031A0C089CEA8FD10510...8B68767B8B9A2D212AA23D31B694E321 
-[36m2017-12-03 12:59:33.120 UTC [msp/identity] Sign -> DEBU 00b[0m Sign: digest: 2D9864DF589491BF96922ACA252155B5FBD33CAD8CB7874B32019005C684CE1A 
-[36m2017-12-03 12:59:33.121 UTC [chaincodeCmd] upgrade -> DEBU 00c[0m Get Signed envelope
-[36m2017-12-03 12:59:33.121 UTC [chaincodeCmd] chaincodeUpgrade -> DEBU 00d[0m Send signed envelope to orderer
-2017-12-03 12:59:33.127 UTC [main] main -> INFO 00e[0m Exiting.....
+[36m2017-12-15 12:10:57.464 UTC [msp] GetLocalMSP -> DEBU 001[0m Returning existing local MSP
+[36m2017-12-15 12:10:57.464 UTC [msp] GetDefaultSigningIdentity -> DEBU 002[0m Obtaining default signing identity
+2017-12-15 12:10:57.472 UTC [chaincodeCmd] checkChaincodeCmdParams -> INFO 003[0m Using default escc
+2017-12-15 12:10:57.472 UTC [chaincodeCmd] checkChaincodeCmdParams -> INFO 004[0m Using default vscc
+[36m2017-12-15 12:10:57.473 UTC [chaincodeCmd] getChaincodeSpec -> DEBU 005[0m java chaincode disabled
+[36m2017-12-15 12:10:57.474 UTC [chaincodeCmd] upgrade -> DEBU 006[0m Get upgrade proposal for chaincode <path:"github.com/uhuchain/uhuchain-code" name:"automotive" version:"1.4" >
+[36m2017-12-15 12:10:57.474 UTC [msp/identity] Sign -> DEBU 007[0m Sign: plaintext: 0ACE070A6808031A0C08D1F7CED10510...424D53500A04657363630A0476736363 
+[36m2017-12-15 12:10:57.475 UTC [msp/identity] Sign -> DEBU 008[0m Sign: digest: 746FB4B18AABEE64B09A6D8F8E166D7490D9EA211C535B382B687E69367B23A8 
+[36m2017-12-15 12:11:21.054 UTC [chaincodeCmd] upgrade -> DEBU 009[0m endorse upgrade proposal, get response <status:200 message:"OK" payload:"\n\nautomotive\022\0031.4\032\004escc\"\004vscc*4\022\014\022\n\010\001\022\002\010\000\022\002\010\001\032\021\022\017\n\rInsuranceAMSP\032\021\022\017\n\rInsuranceBMSP2D\n \300\222\315X\026d\376)\303\233\346\204\362\203\227\370\026\267\014\033\236\322\360\376qG\006\233\022f\262\221\022 ;\337\330\"\270\203\362hm\234l\033\247j\326v\277\037\225\236\333n\225f\250\023\210\013\212]\216P: \2414d\355\304\036\006\321#\021\304\261A\304\277\037\275\235\001\254\252\237\320\212!=_\356n\017\247\220BQ\022\020\022\016\010\001\022\002\010\000\022\002\010\001\022\002\010\002\032\023\022\021\n\rInsuranceAMSP\020\001\032\023\022\021\n\rInsuranceBMSP\020\001\032\023\022\021\n\rInsuranceCMSP\020\001" >
+[36m2017-12-15 12:11:21.055 UTC [msp/identity] Sign -> DEBU 00a[0m Sign: plaintext: 0ACE070A6808031A0C08D1F7CED10510...8541C5E2A3D2A944342794290545B295 
+[36m2017-12-15 12:11:21.055 UTC [msp/identity] Sign -> DEBU 00b[0m Sign: digest: 81B46EF73EB86990D11EEB159E4871DAF661D9E820F2CF177D8D3AF40E4CF8B7 
+[36m2017-12-15 12:11:21.056 UTC [chaincodeCmd] upgrade -> DEBU 00c[0m Get Signed envelope
+[36m2017-12-15 12:11:21.056 UTC [chaincodeCmd] chaincodeUpgrade -> DEBU 00d[0m Send signed envelope to orderer
+2017-12-15 12:11:21.070 UTC [main] main -> INFO 00e[0m Exiting.....

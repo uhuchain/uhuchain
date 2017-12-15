@@ -22,7 +22,7 @@ func (handler *RequestHandler) HandleGetCar(params car.GetCarParams) middleware.
 	result, err := handler.uhuClient.QueryLedger(handler.carChainCode, "getCar", strconv.FormatInt(params.ID, 10))
 	if err != nil {
 		// TODO check if there is a better way to classify error responses
-		if strings.Contains(err.Error(), "Nil amount for") {
+		if strings.Contains(err.Error(), "Code 404") {
 			res := car.NewGetCarNotFound()
 			return res
 		}
